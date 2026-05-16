@@ -167,8 +167,8 @@
   <!-- WELCOME -->
   <div class="screen active" id="screen-welcome">
     <div class="eyebrow">Before you begin</div>
-    <div class="screen-title">Clinical Self-Assessment</div>
-    <div class="screen-body">The questionnaires below are validated clinical tools used by healthcare professionals worldwide. A formal assessment using these tools typically costs upwards of 4,500 DKK and involves months of waiting. You can complete them here, right now, for free.</div>
+    <div class="screen-title">Understanding your symptoms starts here</div>
+    <div class="screen-body">These four questionnaires each measure a different aspect of complex chronic illness — fatigue severity, post-viral functional status, ME/CFS symptom burden, and autonomic dysfunction. Together they build a picture of your dominant symptom pattern.<br><br>Each tool is validated and used by healthcare professionals in clinical practice. Completing them gives you structured, evidence-based language to describe what you are experiencing — and something concrete to bring to your doctor.<br><br>They do not diagnose. But they give you and your clinician a clearer starting point.</div>
     <div class="warning-box amber">
       <div class="warning-title">Important — please read first</div>
       <div class="warning-body">These tools do not diagnose. Depression, anxiety, thyroid problems, anaemia, and other treatable conditions produce similar symptoms. If you have not yet seen a doctor, please do that first. This assessment is for people who have already done so and are still without answers.</div>
@@ -277,9 +277,9 @@ const QUESTIONNAIRES = [
     sevOptions: ['Not present','Mild','Moderate','Severe','Very severe'],
     attribution: 'DSQ Short Form (DSQ-SF) — Sunnquist, M., Lazarus, S., & Jason, L.A. (2019). The development of a short form of the DePaul Symptom Questionnaire. Rehabilitation Psychology, 64(4), 453–462. DePaul University. Freely available for clinical use.',
     bands: [
-      { maxPct: 30, label: 'Low symptom burden', color: '#1E8449', bg: '#EAF5EE', body: 'Your scores suggest a relatively low ME/CFS symptom burden. If symptoms persist, please discuss with your doctor.' },
-      { maxPct: 60, label: 'Moderate symptom burden', color: '#D4880A', bg: '#FEF5E7', body: 'Your scores suggest a moderate symptom burden. This warrants further investigation with a healthcare professional.' },
-      { maxPct: 100, label: 'Significant symptom burden', color: '#C0392B', bg: '#FDECEA', body: 'Your scores suggest a significant ME/CFS symptom burden. This book and the cascade model it describes may be highly relevant to your situation.' }
+      { label: 'Low symptom burden', color: '#1E8449', bg: '#EAF5EE', body: 'Few symptoms reach the clinical threshold (moderate frequency and severity). If you have concerns, discuss with your doctor.' },
+      { label: 'Moderate symptom burden', color: '#D4880A', bg: '#FEF5E7', body: 'Several symptoms reach the clinical threshold. Some core ME/CFS symptoms are present. This warrants investigation with a healthcare professional.' },
+      { label: 'Pattern consistent with ME/CFS criteria', color: '#C0392B', bg: '#FDECEA', body: 'Your symptom pattern meets the core requirements of the Canadian ME/CFS criteria — fatigue, post-exertional malaise, unrefreshing sleep, cognitive symptoms, plus symptoms across multiple additional domains. This book is likely highly relevant to your situation.' }
     ]
   },
   {
@@ -633,15 +633,45 @@ async function showResults() {
   let score, scoreLabel, band, resultSummary;
 
   if (q.type === 'dsq') {
-    const totalFreq = dsqFreqAnswers.reduce((s, v) => s + (v || 0), 0);
-    const totalSev = dsqSevAnswers.reduce((s, v) => s + (v || 0), 0);
-    const maxFreq = q.questions.length * 4;
-    const maxSev = q.questions.length * 4;
-    const pct = Math.round(((totalFreq + totalSev) / (maxFreq + maxSev)) * 100);
-    score = pct + '%';
-    scoreLabel = `combined frequency + severity score`;
-    band = q.bands.find(b => pct <= b.maxPct) || q.bands[q.bands.length - 1];
-    resultSummary = q.questions.map((qq, i) => `${qq}: Frequency=${dsqFreqAnswers[i]}/4, Severity=${dsqSevAnswers[i]}/4`).join('\n');
+    // Official 2-2 threshold: symptom counts only if frequency >= 2 AND severity >= 2
+    const meets = (i) => (dsqFreqAnswers[i] || 0) >= 2 && (dsqSevAnswers[i] || 0) >= 2;
+
+    // Core symptoms per Canadian ME/CFS criteria
+    const hasFatigue = meets(0);
+    const hasPEM = meets(1) || meets(2);
+    const hasUnrefreshed = meets(3);
+    const hasNeuro = meets(6) || meets(7);
+
+    // Additional symptom domains
+    const domainPain = meets(4) || meets(5);
+    const domainAuto = meets(8) || meets(9);
+    const domainNeuroendo = meets(10) || meets(11);
+    const domainImmune = meets(12) || meets(13);
+    const additionalDomains = [domainPain, domainAuto, domainNeuroendo, domainImmune].filter(Boolean).length;
+
+    const coreCount = [hasFatigue, hasPEM, hasUnrefreshed, hasNeuro].filter(Boolean).length;
+    const meetsCanadian = hasFatigue && hasPEM && hasUnrefreshed && hasNeuro && additionalDomains >= 2;
+    const totalMeeting = q.questions.filter((_, i) => meets(i)).length;
+
+    score = totalMeeting + ' / 14';
+    scoreLabel = 'symptoms meeting clinical threshold (frequency ≥ moderate, severity ≥ moderate)';
+
+    if (meetsCanadian) {
+      band = q.bands[2];
+    } else if (coreCount >= 3 || totalMeeting >= 5) {
+      band = q.bands[1];
+    } else {
+      band = q.bands[0];
+    }
+
+    resultSummary = [
+      `Symptoms meeting 2-2 threshold: ${totalMeeting}/14`,
+      `Core symptoms: Fatigue=${hasFatigue}, PEM=${hasPEM}, Unrefreshing sleep=${hasUnrefreshed}, Cognitive=${hasNeuro}`,
+      `Additional domains: Pain=${domainPain}, Autonomic=${domainAuto}, Neuroendocrine=${domainNeuroendo}, Immune=${domainImmune}`,
+      `Pattern consistent with Canadian ME/CFS criteria: ${meetsCanadian}`,
+      '',
+      ...q.questions.map((qq, i) => `${qq}: Frequency=${dsqFreqAnswers[i]}/4, Severity=${dsqSevAnswers[i]}/4`)
+    ].join('\n');
 
   } else if (q.type === 'fss') {
     const vals = answers.map((a, i) => q.options[a]?.value || 0);
@@ -664,7 +694,7 @@ async function showResults() {
     const count = sasAnswers.filter(a => a.present === true).length;
     const impactTotal = sasAnswers.reduce((s, a) => s + (a.severity || 0), 0);
     score = count;
-    scoreLabel = `symptoms present · impact score: ${impactTotal}`;
+    scoreLabel = `symptoms reported · total impact score: ${impactTotal} / ${qs.filter(qq => !qq.maleOnly || gender === 'male').length * 5}`;
     band = q.bands.find(b => count <= b.maxCount) || q.bands[q.bands.length - 1];
     resultSummary = qs.map((qq, i) => {
       const a = sasAnswers[i];
