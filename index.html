@@ -1,42 +1,737 @@
-export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Not In Your Head — Clinical Self-Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #CA6F1E;
+    --navy: #1F3A5F;
+    --sage: #D4E0D8;
+    --off-white: #F2F0EB;
+    --muted: #6A6A62;
+    --red: #C0392B;
+    --amber-light: #FEF5E7;
+    --navy-light: #EEF2F6;
   }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--sage); min-height: 100vh; color: #1a1a1a; }
+  .app { max-width: 660px; margin: 0 auto; min-height: 100vh; background: var(--off-white); box-shadow: 0 0 60px rgba(31,58,95,0.15); }
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  .header { background: var(--navy); padding: 28px 36px 24px; position: relative; overflow: hidden; }
+  .header::after { content: ''; position: absolute; top: -60px; right: -60px; width: 180px; height: 180px; background: var(--orange); opacity: 0.07; border-radius: 50%; }
+  .header-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; color: var(--orange); margin-bottom: 4px; }
+  .header-sub { font-size: 12px; color: rgba(255,255,255,0.5); font-style: italic; font-family: 'Playfair Display', serif; }
+
+  .progress-bar { height: 3px; background: rgba(202,111,30,0.2); }
+  .progress-fill { height: 100%; background: var(--orange); transition: width 0.4s ease; width: 0%; }
+
+  .screen { display: none; padding: 32px 36px; animation: fadeIn 0.3s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
+  .screen-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--navy); line-height: 1.3; margin-bottom: 14px; }
+  .screen-body { font-size: 14px; line-height: 1.75; color: var(--muted); margin-bottom: 24px; }
+
+  .warning-box { border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 20px; }
+  .warning-box.amber { background: var(--amber-light); }
+  .warning-box.navy { background: var(--navy-light); border-left-color: var(--navy); }
+  .warning-title { font-size: 12px; font-weight: 500; margin-bottom: 6px; letter-spacing: 0.3px; }
+  .warning-body { font-size: 13px; line-height: 1.65; }
+  .amber .warning-title { color: #7D4E00; }
+  .amber .warning-body { color: #7D4E00; }
+  .navy .warning-title { color: var(--navy); }
+  .navy .warning-body { color: #2C4A6E; }
+
+  .q-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  .q-card { border: 2px solid #E8E4DC; border-radius: 10px; padding: 16px 18px; cursor: pointer; transition: all 0.2s; background: white; display: flex; gap: 14px; align-items: flex-start; }
+  .q-card:hover { border-color: var(--orange); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(202,111,30,0.1); }
+  .q-card.selected { border-color: var(--orange); background: var(--amber-light); }
+  .q-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+  .q-info .q-name { font-size: 14px; font-weight: 500; color: var(--navy); margin-bottom: 3px; }
+  .q-info .q-desc { font-size: 12px; color: var(--muted); line-height: 1.45; }
+  .q-info .q-time { font-size: 11px; color: var(--orange); font-weight: 500; margin-top: 4px; }
+  .q-info .q-validated { font-size: 10px; color: #1E8449; font-weight: 500; margin-top: 2px; }
+
+  .btn { display: block; width: 100%; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; transition: all 0.2s; text-align: center; }
+  .btn-primary { background: var(--orange); color: white; }
+  .btn-primary:hover:not(:disabled) { background: #a85a14; transform: translateY(-1px); }
+  .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+  .btn-ghost { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); width: auto; padding: 10px 20px; font-size: 13px; }
+  .btn-ghost:hover { background: var(--navy); color: white; }
+
+  /* Gender select */
+  .gender-row { display: flex; gap: 12px; margin-bottom: 24px; }
+  .gender-btn { flex: 1; padding: 14px; border-radius: 8px; border: 2px solid #E8E4DC; background: white; cursor: pointer; font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--navy); transition: all 0.2s; text-align: center; }
+  .gender-btn:hover { border-color: var(--orange); }
+  .gender-btn.selected { border-color: var(--orange); background: var(--amber-light); }
+
+  /* Question screen */
+  .q-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .q-badge { font-size: 10px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; color: white; }
+  .q-counter { font-size: 12px; color: var(--muted); margin-left: auto; }
+
+  .question-text { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: var(--navy); line-height: 1.45; margin-bottom: 6px; }
+  .question-note { font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 12px; }
+  .honesty-note { font-size: 11px; color: var(--navy); background: var(--navy-light); border-radius: 6px; padding: 8px 12px; margin-bottom: 18px; line-height: 1.5; }
+
+  /* Two-part DSQ question */
+  .dsq-part-label { font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; margin-top: 16px; }
+
+  .options { display: flex; flex-direction: column; gap: 9px; margin-bottom: 24px; }
+  .option { padding: 13px 16px; border-radius: 8px; border: 2px solid #E8E4DC; cursor: pointer; font-size: 14px; color: #1a1a1a; transition: all 0.15s; background: white; display: flex; align-items: center; gap: 12px; }
+  .option:hover { border-color: var(--orange); }
+  .option.selected { border-color: var(--orange); background: var(--amber-light); font-weight: 500; color: var(--navy); }
+  .radio { width: 17px; height: 17px; border-radius: 50%; border: 2px solid #ccc; flex-shrink: 0; transition: all 0.15s; }
+  .option.selected .radio { border-color: var(--orange); background: var(--orange); }
+
+  /* PCFS grade cards */
+  .grade-card { border: 2px solid #E8E4DC; border-radius: 10px; padding: 16px 18px; cursor: pointer; transition: all 0.2s; background: white; margin-bottom: 10px; }
+  .grade-card:hover { border-color: var(--orange); }
+  .grade-card.selected { border-color: var(--orange); background: var(--amber-light); }
+  .grade-num { font-size: 11px; font-weight: 500; color: var(--orange); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .grade-title { font-size: 14px; font-weight: 500; color: var(--navy); margin-bottom: 4px; }
+  .grade-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* SAS yes/no */
+  .sas-question { border: 1px solid #E8E4DC; border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; background: white; }
+  .sas-q-text { font-size: 14px; font-weight: 500; color: var(--navy); margin-bottom: 12px; }
+  .sas-yn { display: flex; gap: 10px; margin-bottom: 10px; }
+  .sas-yn-btn { flex: 1; padding: 10px; border-radius: 8px; border: 2px solid #E8E4DC; background: white; cursor: pointer; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all 0.15s; text-align: center; }
+  .sas-yn-btn:hover { border-color: var(--orange); }
+  .sas-yn-btn.selected-yes { border-color: var(--orange); background: var(--amber-light); color: var(--navy); }
+  .sas-yn-btn.selected-no { border-color: #ccc; background: #f5f5f5; color: var(--muted); }
+  .sas-severity { display: none; }
+  .sas-severity.visible { display: block; }
+  .sas-sev-label { font-size: 11px; color: var(--muted); margin-bottom: 8px; font-style: italic; }
+  .sas-sev-opts { display: flex; gap: 6px; flex-wrap: wrap; }
+  .sas-sev-opt { padding: 6px 12px; border-radius: 20px; border: 1.5px solid #E8E4DC; background: white; cursor: pointer; font-size: 12px; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+  .sas-sev-opt:hover { border-color: var(--orange); }
+  .sas-sev-opt.selected { border-color: var(--orange); background: var(--amber-light); font-weight: 500; }
+
+  .nav-row { display: flex; gap: 10px; align-items: center; }
+  .nav-row .btn-primary { flex: 1; }
+
+  /* Results */
+  .result-hero { background: var(--navy); margin: -32px -36px 28px; padding: 28px 36px; position: relative; overflow: hidden; }
+  .result-hero::after { content: ''; position: absolute; bottom: -40px; right: -40px; width: 130px; height: 130px; background: var(--orange); opacity: 0.12; border-radius: 50%; }
+  .result-hero-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 8px; }
+  .result-score-big { font-family: 'Playfair Display', serif; font-size: 56px; font-weight: 900; color: var(--orange); line-height: 1; }
+  .result-score-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+  .result-qname { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 10px; font-style: italic; font-family: 'Playfair Display', serif; }
+
+  .band-box { border-radius: 10px; padding: 18px 22px; margin-bottom: 16px; }
+  .band-title { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .band-body { font-size: 13px; line-height: 1.7; }
+
+  .ai-box { background: white; border: 1px solid #E8E4DC; border-radius: 10px; padding: 20px 22px; margin-bottom: 16px; }
+  .ai-label { font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
+  .ai-body { font-size: 14px; line-height: 1.8; color: #1a1a1a; }
+
+  .loading { display: flex; align-items: center; gap: 8px; padding: 8px 0; }
+  .loading-text { font-size: 13px; color: var(--muted); font-style: italic; }
+  .dots { display: flex; gap: 5px; }
+  .dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); animation: pulse 1.2s infinite; }
+  .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%,60%,100%{transform:translateY(0);opacity:.3} 30%{transform:translateY(-7px);opacity:1} }
+
+  .next-box { background: var(--navy); border-radius: 10px; padding: 20px 22px; margin-bottom: 16px; }
+  .next-label { font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 14px; }
+  .next-item { display: flex; gap: 12px; margin-bottom: 10px; }
+  .next-num { width: 22px; height: 22px; border-radius: 50%; background: var(--orange); color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .next-text { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.55; }
+
+  .attribution-box { background: var(--navy-light); border-radius: 10px; padding: 18px 22px; margin-bottom: 16px; }
+  .attr-label { font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--navy); margin-bottom: 12px; }
+  .attr-item { font-size: 12px; color: #2C4A6E; line-height: 1.6; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 0.5px solid #C8D4E0; }
+  .attr-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .attr-name { font-weight: 500; }
+  .attr-validated { color: #1E8449; font-weight: 500; }
+
+  .footer-note { font-size: 11px; color: var(--muted); text-align: center; line-height: 1.6; padding-top: 16px; border-top: 1px solid #E8E4DC; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-title">Not In Your Head</div>
+    <div class="header-sub">Clinical Self-Assessment Tool</div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+  <!-- WELCOME -->
+  <div class="screen active" id="screen-welcome">
+    <div class="eyebrow">Before you begin</div>
+    <div class="screen-title">Clinical Self-Assessment</div>
+    <div class="screen-body">The questionnaires below are validated clinical tools used by healthcare professionals worldwide. A formal assessment using these tools typically costs upwards of 4,500 DKK and involves months of waiting. You can complete them here, right now, for free.</div>
+    <div class="warning-box amber">
+      <div class="warning-title">Important — please read first</div>
+      <div class="warning-body">These tools do not diagnose. Depression, anxiety, thyroid problems, anaemia, and other treatable conditions produce similar symptoms. If you have not yet seen a doctor, please do that first. This assessment is for people who have already done so and are still without answers.</div>
+    </div>
+    <div class="warning-box navy">
+      <div class="warning-title">A note on honesty</div>
+      <div class="warning-body">These tools are only useful if you answer honestly. Before each question ask yourself — is this genuinely different from how I was before? Is it consistent over months, not just a bad week? If the honest answer is no — answer no. Honest answers give useful results. Inflated answers mislead you.</div>
+    </div>
+    <button class="btn btn-primary" onclick="goTo('screen-select')">I understand — continue</button>
+  </div>
+
+  <!-- SELECT -->
+  <div class="screen" id="screen-select">
+    <div class="eyebrow">Step 1 of 3</div>
+    <div class="screen-title">Choose your questionnaire</div>
+    <div class="screen-body">Select the one that best matches your situation. You can return and try others.</div>
+    <div class="q-grid" id="qGrid"></div>
+    <button class="btn btn-primary" id="startBtn" disabled onclick="startQ()">Start assessment</button>
+  </div>
+
+  <!-- GENDER (SAS only) -->
+  <div class="screen" id="screen-gender">
+    <div class="eyebrow">One quick question</div>
+    <div class="screen-title">Please select your sex</div>
+    <div class="screen-body">The autonomic symptom questionnaire includes one question that only applies to men. This determines which version you receive.</div>
+    <div class="gender-row">
+      <button class="gender-btn" id="genderF" onclick="selectGender('female')">Female</button>
+      <button class="gender-btn" id="genderM" onclick="selectGender('male')">Male</button>
+    </div>
+    <button class="btn btn-primary" id="genderContinue" disabled onclick="startQAfterGender()">Continue</button>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div class="screen" id="screen-questions">
+    <div class="q-meta">
+      <div class="q-badge" id="qBadge"></div>
+      <div class="q-counter" id="qCounter"></div>
+    </div>
+    <div class="question-text" id="questionText"></div>
+    <div class="question-note" id="questionNote"></div>
+    <div class="honesty-note">Answer based on what is genuinely different for you — not what could apply to anyone on a bad day.</div>
+    <div id="questionBody"></div>
+    <div class="nav-row">
+      <button class="btn-ghost btn" onclick="prevQ()">← Back</button>
+      <button class="btn btn-primary" id="nextBtn" disabled onclick="nextQ()">Next</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="screen" id="screen-results">
+    <div class="result-hero">
+      <div class="result-hero-label">Your result</div>
+      <div class="result-score-big" id="scoreDisplay"></div>
+      <div class="result-score-sub" id="scoreSubDisplay"></div>
+      <div class="result-qname" id="scoreQName"></div>
+    </div>
+    <div class="band-box" id="bandBox"></div>
+    <div class="ai-box">
+      <div class="ai-label">Personalised interpretation</div>
+      <div class="ai-body" id="aiInterpretation">
+        <div class="loading">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div class="loading-text">Analysing your responses...</div>
+        </div>
+      </div>
+    </div>
+    <div class="next-box" id="nextStepsBox"></div>
+    <div class="attribution-box" id="attributionBox"></div>
+    <button class="btn btn-primary" style="margin-bottom:16px" onclick="goTo('screen-select')">Take another questionnaire</button>
+    <div class="footer-note">These are validated clinical tools. They do not diagnose — only a qualified clinician can do that. Always discuss your results with a healthcare professional.<br><br>— Jonas Bertelsen, MSc. Osteopath · Physical Therapist · Long COVID Patient</div>
+  </div>
+</div>
+
+<script>
+// ── Questionnaire data ──────────────────────────────────────────────────────
+
+const QUESTIONNAIRES = [
+  {
+    id: 'dsq',
+    name: 'DSQ Short Form',
+    desc: 'Measures ME/CFS symptoms including post-exertional malaise, fatigue, cognitive and autonomic dysfunction.',
+    time: '~8 minutes · 14 symptoms',
+    icon: '🧬',
+    color: '#C0392B',
+    bg: '#FDECEA',
+    validated: 'Validated — Sunnquist, Lazarus & Jason (2019)',
+    type: 'dsq',
+    instruction: 'For each symptom, rate both how often you have had it AND how much it has bothered you — over the past 6 months.',
+    questions: [
+      'Fatigue or extreme tiredness',
+      'Next day soreness or fatigue after non-strenuous, everyday activities',
+      'Minimum exercise makes you physically tired',
+      'Feeling unrefreshed after you wake up in the morning',
+      'Pain or aching in your muscles',
+      'Bloating',
+      'Problems remembering things',
+      'Difficulty paying attention for a long period of time',
+      'Irritable bowel problems',
+      'Feeling unsteady on your feet, like you might fall',
+      'Cold limbs (e.g. arms, legs, hands)',
+      'Feeling hot or cold for no reason',
+      'Flu-like symptoms',
+      'Some smells, foods, medications, or chemicals make you feel sick'
+    ],
+    freqOptions: ['None of the time','A little of the time','About half the time','Most of the time','All of the time'],
+    sevOptions: ['Not present','Mild','Moderate','Severe','Very severe'],
+    attribution: 'DSQ Short Form (DSQ-SF) — Sunnquist, M., Lazarus, S., & Jason, L.A. (2019). The development of a short form of the DePaul Symptom Questionnaire. Rehabilitation Psychology, 64(4), 453–462. DePaul University. Freely available for clinical use.',
+    bands: [
+      { maxPct: 30, label: 'Low symptom burden', color: '#1E8449', bg: '#EAF5EE', body: 'Your scores suggest a relatively low ME/CFS symptom burden. If symptoms persist, please discuss with your doctor.' },
+      { maxPct: 60, label: 'Moderate symptom burden', color: '#D4880A', bg: '#FEF5E7', body: 'Your scores suggest a moderate symptom burden. This warrants further investigation with a healthcare professional.' },
+      { maxPct: 100, label: 'Significant symptom burden', color: '#C0392B', bg: '#FDECEA', body: 'Your scores suggest a significant ME/CFS symptom burden. This book and the cascade model it describes may be highly relevant to your situation.' }
+    ]
+  },
+  {
+    id: 'fss',
+    name: 'Fatigue Severity Scale (FSS)',
+    desc: 'Measures how severely fatigue affects your daily life — motivation, physical function, work and social activities.',
+    time: '~3 minutes · 9 statements',
+    icon: '⚡',
+    color: '#D4880A',
+    bg: '#FEF5E7',
+    validated: 'Validated — Krupp et al. (1989), 7,000+ citations',
+    type: 'likert',
+    instruction: 'During the past week, I have found that:',
+    questions: [
+      { text: 'My motivation is lower when I am fatigued.', sub: '' },
+      { text: 'Exercise brings on my fatigue.', sub: '' },
+      { text: 'I am easily fatigued.', sub: '' },
+      { text: 'Fatigue interferes with my physical functioning.', sub: '' },
+      { text: 'Fatigue causes frequent problems for me.', sub: '' },
+      { text: 'My fatigue prevents sustained physical functioning.', sub: '' },
+      { text: 'Fatigue interferes with carrying out certain duties and responsibilities.', sub: '' },
+      { text: 'Fatigue is among my three most disabling symptoms.', sub: '' },
+      { text: 'Fatigue interferes with my work, family, or social life.', sub: '' }
+    ],
+    options: [
+      { label: '1 — Strongly disagree', value: 1 },
+      { label: '2', value: 2 },
+      { label: '3', value: 3 },
+      { label: '4 — Neutral', value: 4 },
+      { label: '5', value: 5 },
+      { label: '6', value: 6 },
+      { label: '7 — Strongly agree', value: 7 }
+    ],
+    attribution: 'Fatigue Severity Scale (FSS) — Krupp, L.B., LaRocca, N.G., Muir-Nash, J., & Steinberg, A.D. (1989). The fatigue severity scale: application to patients with multiple sclerosis and systemic lupus erythematosus. Archives of Neurology, 46(10), 1121–1123. Freely available for non-profit use.',
+    bands: [
+      { maxScore: 2.9, label: 'No significant fatigue', color: '#1E8449', bg: '#EAF5EE', body: 'Your mean score suggests fatigue is not significantly impacting your daily life. Healthy adults average around 2.3.' },
+      { maxScore: 3.9, label: 'Mild to moderate fatigue', color: '#D4880A', bg: '#FEF5E7', body: 'Your mean score suggests fatigue is affecting your daily life and warrants attention.' },
+      { maxScore: 7, label: 'Significant fatigue', color: '#C0392B', bg: '#FDECEA', body: 'Your mean score of 4 or above indicates clinically significant fatigue. This is consistent with what this book describes.' }
+    ]
+  },
+  {
+    id: 'pcfs',
+    name: 'Post-COVID Functional Status (PCFS)',
+    desc: 'Measures overall functional limitations caused by your illness — daily activities, lifestyle, sports and social participation.',
+    time: '~1 minute · single grade',
+    icon: '🫁',
+    color: '#2471A3',
+    bg: '#EAF3FB',
+    validated: 'Validated — Klok et al. (2020), WHO-recommended',
+    type: 'pcfs',
+    instruction: 'Think about how you have been over the past week on average. Choose the grade that best describes your situation.',
+    grades: [
+      { grade: 0, title: 'No functional limitations', desc: 'No complaints related to your illness. Fully able to carry out all usual activities, lifestyle, sports and social activities.' },
+      { grade: 1, title: 'Negligible functional limitations', desc: 'You have complaints but they do not lead to any restrictions in daily activities, lifestyle, sports or social activities.' },
+      { grade: 2, title: 'Slight functional limitations', desc: 'Complaints lead to some limitations on demanding activities. You may be working at a reduced pace or have given up strenuous sports or leisure activities.' },
+      { grade: 3, title: 'Moderate functional limitations', desc: 'Complaints lead to limitations on daily activities. You may be working fewer hours or have given up all sports and leisure activities. You can still manage personal care independently.' },
+      { grade: 4, title: 'Severe functional limitations', desc: 'Complaints cause inability to perform most daily activities. You need help with personal care activities.' }
+    ],
+    attribution: 'Post-COVID-19 Functional Status Scale (PCFS) — Klok, F.A., et al. (2020). The Post-COVID-19 Functional Status scale: a tool to measure functional status over time after COVID-19. European Respiratory Journal, 56(1), 2001494. Creative Commons Attribution Non-Commercial 4.0.',
+    bands: [
+      { maxGrade: 0, label: 'No functional limitation', color: '#1E8449', bg: '#EAF5EE', body: 'Grade 0: No functional limitations. Your illness does not appear to be restricting your daily life.' },
+      { maxGrade: 1, label: 'Negligible limitation', color: '#2471A3', bg: '#EAF3FB', body: 'Grade 1: You have complaints but they are not yet limiting your activities. Worth monitoring.' },
+      { maxGrade: 2, label: 'Slight functional limitation', color: '#D4880A', bg: '#FEF5E7', body: 'Grade 2: Some activities are affected. This warrants investigation with a healthcare professional.' },
+      { maxGrade: 3, label: 'Moderate functional limitation', color: '#C0392B', bg: '#FDECEA', body: 'Grade 3: Daily activities are affected. This level of impact is consistent with what this book describes.' },
+      { maxGrade: 4, label: 'Severe functional limitation', color: '#7B1A0E', bg: '#FDECEA', body: 'Grade 4: Significant daily limitations requiring personal care support. Please seek medical attention if you have not already done so.' }
+    ]
+  },
+  {
+    id: 'sas',
+    name: 'Survey of Autonomic Symptoms (SAS)',
+    desc: 'Measures autonomic nervous system symptoms including dizziness, sweating, digestion, bladder and temperature regulation.',
+    time: '~5 minutes · 11–12 questions',
+    icon: '🧠',
+    color: '#6C3483',
+    bg: '#F4F0FB',
+    validated: 'Validated — Zilliox et al. (2011)',
+    type: 'sas',
+    requiresGender: true,
+    instruction: 'For each symptom, indicate whether you have experienced it in the past 6 months, and if so, how much it bothers you.',
+    questions: [
+      { text: 'Do you have lightheadedness?', sub: 'Feeling dizzy or faint, especially when standing up' },
+      { text: 'Do you have a dry mouth or dry eyes?', sub: '' },
+      { text: 'Are your feet pale or blue?', sub: 'Unusual colour change in your feet' },
+      { text: 'Are your feet colder than the rest of your body?', sub: '' },
+      { text: 'Is sweating in your feet decreased compared to the rest of your body?', sub: '' },
+      { text: 'Is sweating in your feet decreased or absent after exercise or during hot weather?', sub: '' },
+      { text: 'Is sweating in your hands increased compared to the rest of your body?', sub: '' },
+      { text: 'Do you have nausea, vomiting, or bloating after eating a small meal?', sub: '' },
+      { text: 'Do you have persistent diarrhoea?', sub: 'More than 3 loose bowel movements per day' },
+      { text: 'Do you have persistent constipation?', sub: 'Less than 1 bowel movement every other day' },
+      { text: 'Do you have leaking of urine?', sub: 'Urinary incontinence' },
+      { text: 'Do you have difficulty obtaining an erection?', sub: 'Male only', maleOnly: true }
+    ],
+    severityOptions: ['Not at all', 'A little', 'Some', 'A moderate amount', 'A lot'],
+    attribution: 'Survey of Autonomic Symptoms (SAS) — Zilliox, L., et al. (2011). Assessing autonomic dysfunction in early diabetic neuropathy: The Survey of Autonomic Symptoms. Neurology, 76(12), 1099–1105. Freely available — no permission required for use.',
+    bands: [
+      { maxCount: 2, label: 'Low autonomic symptom burden', color: '#1E8449', bg: '#EAF5EE', body: 'You report few autonomic symptoms. If any persist and concern you, discuss with your doctor.' },
+      { maxCount: 5, label: 'Moderate autonomic symptoms', color: '#D4880A', bg: '#FEF5E7', body: 'You report a moderate number of autonomic symptoms. This is commonly seen in Long COVID, POTS and related conditions.' },
+      { maxCount: 12, label: 'Significant autonomic dysfunction', color: '#6C3483', bg: '#F4F0FB', body: 'You report significant autonomic symptoms. This is a key feature of the cascade described in this book and warrants medical investigation.' }
+    ]
   }
+];
 
-  try {
-    const { prompt } = req.body;
+// ── State ───────────────────────────────────────────────────────────────────
+let selectedQIdx = null;
+let currentQ = 0;
+let gender = null;
+let answers = [];
+let dsqFreqAnswers = [];
+let dsqSevAnswers = [];
+let sasAnswers = []; // {present: bool, severity: 0-5}
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 400,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
+// ── Utilities ───────────────────────────────────────────────────────────────
+function setProgress(pct) { document.getElementById('progressFill').style.width = pct + '%'; }
 
-    if (!response.ok) {
-      const error = await response.text();
-      return res.status(response.status).json({ error });
-    }
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
 
-    const data = await response.json();
-    return res.status(200).json({ text: data.content[0].text });
+// ── Init ────────────────────────────────────────────────────────────────────
+window.onload = function() {
+  setProgress(5);
+  renderQCards();
+};
 
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
+function renderQCards() {
+  document.getElementById('qGrid').innerHTML = QUESTIONNAIRES.map((q, i) => `
+    <div class="q-card" id="qcard-${i}" onclick="selectQ(${i})">
+      <div class="q-icon" style="background:${q.bg}">${q.icon}</div>
+      <div class="q-info">
+        <div class="q-name">${q.name}</div>
+        <div class="q-desc">${q.desc}</div>
+        <div class="q-time">${q.time}</div>
+        <div class="q-validated">✓ ${q.validated}</div>
+      </div>
+    </div>`).join('');
+}
+
+function selectQ(i) {
+  document.querySelectorAll('.q-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('qcard-' + i).classList.add('selected');
+  selectedQIdx = i;
+  document.getElementById('startBtn').disabled = false;
+}
+
+function startQ() {
+  const q = QUESTIONNAIRES[selectedQIdx];
+  if (q.requiresGender) {
+    gender = null;
+    document.getElementById('genderF').classList.remove('selected');
+    document.getElementById('genderM').classList.remove('selected');
+    document.getElementById('genderContinue').disabled = true;
+    goTo('screen-gender');
+  } else {
+    initQuestionnaire();
   }
 }
+
+function selectGender(g) {
+  gender = g;
+  document.getElementById('genderF').classList.toggle('selected', g === 'female');
+  document.getElementById('genderM').classList.toggle('selected', g === 'male');
+  document.getElementById('genderContinue').disabled = false;
+}
+
+function startQAfterGender() {
+  initQuestionnaire();
+}
+
+function initQuestionnaire() {
+  currentQ = 0;
+  const q = QUESTIONNAIRES[selectedQIdx];
+  const count = getQuestions().length;
+  answers = new Array(count).fill(null);
+  dsqFreqAnswers = new Array(count).fill(null);
+  dsqSevAnswers = new Array(count).fill(null);
+  sasAnswers = getQuestions().map(() => ({ present: null, severity: null }));
+  renderQuestion();
+  goTo('screen-questions');
+  setProgress(20);
+}
+
+function getQuestions() {
+  const q = QUESTIONNAIRES[selectedQIdx];
+  if (q.type === 'sas') {
+    return gender === 'male' ? q.questions : q.questions.filter(qq => !qq.maleOnly);
+  }
+  if (q.type === 'pcfs') return q.grades;
+  return q.questions;
+}
+
+function renderQuestion() {
+  const q = QUESTIONNAIRES[selectedQIdx];
+  const qs = getQuestions();
+  const total = qs.length;
+  const item = qs[currentQ];
+
+  document.getElementById('qBadge').textContent = q.name;
+  document.getElementById('qBadge').style.background = q.color;
+  document.getElementById('qCounter').textContent = `${currentQ + 1} of ${total}`;
+  setProgress(20 + ((currentQ / total) * 65));
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.textContent = currentQ === total - 1 ? 'See results' : 'Next';
+
+  if (q.type === 'pcfs') {
+    document.getElementById('questionText').textContent = 'Which of the following best describes your situation over the past week?';
+    document.getElementById('questionNote').textContent = q.instruction;
+    renderPCFS(q);
+    nextBtn.disabled = answers[currentQ] === null;
+    return;
+  }
+
+  if (q.type === 'dsq') {
+    document.getElementById('questionText').textContent = item;
+    document.getElementById('questionNote').textContent = q.instruction;
+    renderDSQ(q);
+    nextBtn.disabled = dsqFreqAnswers[currentQ] === null || dsqSevAnswers[currentQ] === null;
+    return;
+  }
+
+  if (q.type === 'sas') {
+    document.getElementById('questionText').textContent = item.text;
+    document.getElementById('questionNote').textContent = item.sub || q.instruction;
+    renderSAS(q);
+    const a = sasAnswers[currentQ];
+    nextBtn.disabled = a.present === null || (a.present === true && a.severity === null);
+    return;
+  }
+
+  // FSS likert
+  document.getElementById('questionText').textContent = item.text || item;
+  document.getElementById('questionNote').textContent = q.instruction;
+  renderLikert(q);
+  nextBtn.disabled = answers[currentQ] === null;
+}
+
+function renderLikert(q) {
+  document.getElementById('questionBody').innerHTML = `
+    <div class="options">${q.options.map((opt, i) => `
+      <div class="option ${answers[currentQ] === i ? 'selected' : ''}" onclick="selectLikert(${i})">
+        <div class="radio"></div>${opt.label}
+      </div>`).join('')}
+    </div>`;
+}
+
+function selectLikert(i) {
+  answers[currentQ] = i;
+  document.querySelectorAll('.option').forEach((el, idx) => el.classList.toggle('selected', idx === i));
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function renderDSQ(q) {
+  document.getElementById('questionBody').innerHTML = `
+    <div class="dsq-part-label">Frequency — over the past 6 months, how often?</div>
+    <div class="options" id="freqOpts">${q.freqOptions.map((opt, i) => `
+      <div class="option ${dsqFreqAnswers[currentQ] === i ? 'selected' : ''}" onclick="selectDSQFreq(${i})">
+        <div class="radio"></div>${opt}
+      </div>`).join('')}
+    </div>
+    <div class="dsq-part-label">Severity — how much has it bothered you?</div>
+    <div class="options" id="sevOpts">${q.sevOptions.map((opt, i) => `
+      <div class="option ${dsqSevAnswers[currentQ] === i ? 'selected' : ''}" onclick="selectDSQSev(${i})">
+        <div class="radio"></div>${opt}
+      </div>`).join('')}
+    </div>`;
+}
+
+function selectDSQFreq(i) {
+  dsqFreqAnswers[currentQ] = i;
+  document.querySelectorAll('#freqOpts .option').forEach((el, idx) => el.classList.toggle('selected', idx === i));
+  document.getElementById('nextBtn').disabled = dsqFreqAnswers[currentQ] === null || dsqSevAnswers[currentQ] === null;
+}
+
+function selectDSQSev(i) {
+  dsqSevAnswers[currentQ] = i;
+  document.querySelectorAll('#sevOpts .option').forEach((el, idx) => el.classList.toggle('selected', idx === i));
+  document.getElementById('nextBtn').disabled = dsqFreqAnswers[currentQ] === null || dsqSevAnswers[currentQ] === null;
+}
+
+function renderPCFS(q) {
+  document.getElementById('questionBody').innerHTML = `
+    <div>${q.grades.map((g, i) => `
+      <div class="grade-card ${answers[0] === i ? 'selected' : ''}" onclick="selectGrade(${i})">
+        <div class="grade-num">Grade ${g.grade}</div>
+        <div class="grade-title">${g.title}</div>
+        <div class="grade-desc">${g.desc}</div>
+      </div>`).join('')}
+    </div>`;
+}
+
+function selectGrade(i) {
+  answers[0] = i;
+  document.querySelectorAll('.grade-card').forEach((el, idx) => el.classList.toggle('selected', idx === i));
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function renderSAS(q) {
+  const a = sasAnswers[currentQ];
+  document.getElementById('questionBody').innerHTML = `
+    <div class="sas-question">
+      <div class="sas-yn">
+        <button class="sas-yn-btn ${a.present === true ? 'selected-yes' : ''}" onclick="selectSASPresent(true)">Yes — I have this</button>
+        <button class="sas-yn-btn ${a.present === false ? 'selected-no' : ''}" onclick="selectSASPresent(false)">No — I don't</button>
+      </div>
+      <div class="sas-severity ${a.present === true ? 'visible' : ''}" id="sasSeverity">
+        <div class="sas-sev-label">How much does it bother you?</div>
+        <div class="sas-sev-opts">${q.severityOptions.map((opt, i) => `
+          <div class="sas-sev-opt ${a.severity === i + 1 ? 'selected' : ''}" onclick="selectSASSeverity(${i + 1})">${opt}</div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+function selectSASPresent(val) {
+  sasAnswers[currentQ].present = val;
+  if (!val) { sasAnswers[currentQ].severity = null; }
+  renderSAS(QUESTIONNAIRES[selectedQIdx]);
+  const a = sasAnswers[currentQ];
+  document.getElementById('nextBtn').disabled = a.present === null || (a.present === true && a.severity === null);
+}
+
+function selectSASSeverity(val) {
+  sasAnswers[currentQ].severity = val;
+  document.querySelectorAll('.sas-sev-opt').forEach((el, i) => el.classList.toggle('selected', i + 1 === val));
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function prevQ() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+  else {
+    const q = QUESTIONNAIRES[selectedQIdx];
+    goTo(q.requiresGender ? 'screen-gender' : 'screen-select');
+  }
+}
+
+function nextQ() {
+  const qs = getQuestions();
+  if (currentQ < qs.length - 1) { currentQ++; renderQuestion(); }
+  else showResults();
+}
+
+// ── Results ─────────────────────────────────────────────────────────────────
+async function showResults() {
+  const q = QUESTIONNAIRES[selectedQIdx];
+  setProgress(90);
+  goTo('screen-results');
+
+  let score, scoreLabel, band, resultSummary;
+
+  if (q.type === 'dsq') {
+    const totalFreq = dsqFreqAnswers.reduce((s, v) => s + (v || 0), 0);
+    const totalSev = dsqSevAnswers.reduce((s, v) => s + (v || 0), 0);
+    const maxFreq = q.questions.length * 4;
+    const maxSev = q.questions.length * 4;
+    const pct = Math.round(((totalFreq + totalSev) / (maxFreq + maxSev)) * 100);
+    score = pct + '%';
+    scoreLabel = `combined frequency + severity score`;
+    band = q.bands.find(b => pct <= b.maxPct) || q.bands[q.bands.length - 1];
+    resultSummary = q.questions.map((qq, i) => `${qq}: Frequency=${dsqFreqAnswers[i]}/4, Severity=${dsqSevAnswers[i]}/4`).join('\n');
+
+  } else if (q.type === 'fss') {
+    const vals = answers.map((a, i) => q.options[a]?.value || 0);
+    const mean = vals.reduce((s, v) => s + v, 0) / vals.length;
+    score = mean.toFixed(1);
+    scoreLabel = 'mean score out of 7';
+    band = q.bands.find(b => mean <= b.maxScore) || q.bands[q.bands.length - 1];
+    resultSummary = q.questions.map((qq, i) => `${qq.text}: ${q.options[answers[i]]?.label || 'N/A'}`).join('\n');
+
+  } else if (q.type === 'pcfs') {
+    const gradeIdx = answers[0];
+    const g = q.grades[gradeIdx];
+    score = `Grade ${g.grade}`;
+    scoreLabel = g.title;
+    band = q.bands.find(b => g.grade <= b.maxGrade) || q.bands[q.bands.length - 1];
+    resultSummary = `Selected grade: Grade ${g.grade} — ${g.title}: ${g.desc}`;
+
+  } else if (q.type === 'sas') {
+    const qs = getQuestions();
+    const count = sasAnswers.filter(a => a.present === true).length;
+    const impactTotal = sasAnswers.reduce((s, a) => s + (a.severity || 0), 0);
+    score = count;
+    scoreLabel = `symptoms present · impact score: ${impactTotal}`;
+    band = q.bands.find(b => count <= b.maxCount) || q.bands[q.bands.length - 1];
+    resultSummary = qs.map((qq, i) => {
+      const a = sasAnswers[i];
+      return `${qq.text}: ${a.present ? 'Yes (severity: ' + (q.severityOptions[a.severity - 1] || 'N/A') + ')' : 'No'}`;
+    }).join('\n');
+  }
+
+  document.getElementById('scoreDisplay').textContent = score;
+  document.getElementById('scoreSubDisplay').textContent = scoreLabel;
+  document.getElementById('scoreQName').textContent = q.name;
+
+  document.getElementById('bandBox').innerHTML = `
+    <div class="band-title" style="color:${band.color}">${band.label}</div>
+    <div class="band-body">${band.body}</div>`;
+  document.getElementById('bandBox').style.background = band.bg;
+
+  document.getElementById('nextStepsBox').innerHTML = `
+    <div class="next-label">What to do next</div>
+    <div class="next-item"><div class="next-num">1</div><div class="next-text">Screenshot or save this result to share with your doctor.</div></div>
+    <div class="next-item"><div class="next-num">2</div><div class="next-text">Book an appointment with your GP and bring this result.</div></div>
+    <div class="next-item"><div class="next-num">3</div><div class="next-text">Read the book with your dominant pattern in mind. Your highest-scoring symptoms point to the most relevant sections.</div></div>`;
+
+  document.getElementById('attributionBox').innerHTML = `
+    <div class="attr-label">About this questionnaire</div>
+    <div class="attr-item">
+      <div class="attr-name">${q.name}</div>
+      <div class="attr-validated">✓ Validated clinical tool</div>
+      <div style="margin-top:4px">${q.attribution}</div>
+    </div>`;
+
+  await getAIInterpretation(q, score, band, resultSummary);
+  setProgress(100);
+}
+
+async function getAIInterpretation(q, score, band, resultSummary) {
+  const aiBox = document.getElementById('aiInterpretation');
+  const prompt = `You are a compassionate health assistant for the book "Not in Your Head" by Jonas Bertelsen, MSc Osteopath and Long COVID patient.
+
+A reader completed the ${q.name} — a validated clinical tool — and their result is:
+Score: ${score}
+Band: ${band.label}
+
+Their individual responses:
+${resultSummary}
+
+Write a warm, honest, plain-language interpretation in 3–4 short paragraphs:
+- Acknowledge what the score means in simple terms
+- Highlight the 2–3 most significant responses
+- Be honest but not alarmist
+- Tell them whether the book is likely relevant to them
+- End with one sentence of genuine encouragement — not empty positivity, but honest hope
+
+Do not use medical jargon. Do not diagnose. Write as a knowledgeable friend. Under 200 words. No bullet points — flowing prose only.`;
+
+  try {
+    const response = await fetch('/api/interpret', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    if (!response.ok) throw new Error('Server error: ' + response.status);
+    const data = await response.json();
+    aiBox.innerHTML = `<div class="ai-body">${data.text.replace(/\n\n/g, '<br><br>')}</div>`;
+  } catch (err) {
+    aiBox.innerHTML = `<div class="ai-body" style="color:var(--muted);font-style:italic;">Your score has been calculated above. Something went wrong with the personalised interpretation — please try again.<br><br>Error: ${err.message}</div>`;
+  }
+}
+</script>
+</body>
+</html>
