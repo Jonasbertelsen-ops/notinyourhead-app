@@ -778,9 +778,9 @@ async function showResults(){
 
 async function interpret(q,score,band,summary){
   const isDA=lang==='da';
-  const prompt=`You are a compassionate health assistant for the book "Not in Your Head" by Jonas Bertelsen, MSc Osteopath and Long COVID patient.
+  const prompt=`You are a compassionate health assistant helping someone understand their symptom assessment results.
 
-A reader completed the ${q.name} and their result is:
+A person completed the ${q.name} and their result is:
 Score: ${score}
 Band: ${band.label}
 
@@ -788,13 +788,12 @@ Their responses:
 ${summary}
 
 Write a warm, honest, plain-language interpretation in 3 to 4 short paragraphs:
-- Acknowledge what the score means in simple terms
+- Acknowledge what the score means for them personally in simple terms
 - Highlight the 2 to 3 most significant responses
 - Be honest but not alarmist
-- Tell them whether the book is likely relevant to them
-- End with one sentence of genuine encouragement, not empty positivity, but honest hope grounded in understanding the biology
+- End with one sentence of genuine encouragement, not empty positivity, but honest hope grounded in the fact that understanding your symptom pattern is a useful starting point
 
-Do not use medical jargon. Do not diagnose. Write as a knowledgeable friend. Under 200 words. No bullet points, flowing prose only.${isDA?' Respond entirely in Danish.':''}`;
+Do not mention any book. Do not use medical jargon. Do not diagnose. Write as a knowledgeable friend. Under 200 words. No bullet points, flowing prose only.${isDA?' Respond entirely in Danish.':''}`;
 
   try{
     const r=await fetch('/api/interpret',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
