@@ -316,7 +316,7 @@ const QS = {
       id:'dsq', type:'dsq',
       name:'DSQ Short Form',
       desc:'Measures ME/CFS symptoms including post-exertional malaise, fatigue, cognitive and autonomic dysfunction.',
-      time:'8 minutes, 14 symptoms',
+      time:'14 questions, approx. 8 minutes',
       icon:'🧬', color:'#C0392B', bg:'#FDECEA',
       val:'Validated: Sunnquist, Lazarus and Jason (2019)',
       officialDa:false,
@@ -326,14 +326,14 @@ const QS = {
       bands:[
         {label:'Low symptom burden',color:'#1E8449',bg:'#EAF5EE',body:'Few symptoms reach the clinical threshold of moderate frequency and severity. If you have concerns, discuss with your doctor.'},
         {label:'Moderate symptom burden',color:'#D4880A',bg:'#FEF5E7',body:'Several symptoms reach the clinical threshold. Some core ME/CFS symptoms are present. This warrants investigation with a healthcare professional.'},
-        {label:'Pattern consistent with ME/CFS criteria',color:'#C0392B',bg:'#FDECEA',body:'Your symptom pattern meets the core requirements of the Canadian ME/CFS criteria: fatigue, post-exertional malaise, unrefreshing sleep, cognitive symptoms, plus symptoms across multiple additional domains. This book is likely highly relevant to your situation.'}
+        {label:'Pattern consistent with ME/CFS criteria',color:'#C0392B',bg:'#FDECEA',body:'Your symptom pattern meets the core requirements of the Canadian ME/CFS criteria: fatigue, post-exertional malaise, unrefreshing sleep, cognitive symptoms, plus symptoms across multiple additional domains.'}
       ]
     },
     {
       id:'fss', type:'fss',
       name:'Fatigue Severity Scale (FSS)',
       desc:'Measures how severely fatigue affects your daily life: motivation, physical function, work and social activities.',
-      time:'3 minutes, 9 statements',
+      time:'9 questions, approx. 3 minutes',
       icon:'⚡', color:'#D4880A', bg:'#FEF5E7',
       val:'Validated: Krupp et al. (1989), 7,000 citations',
       officialDa:false,
@@ -354,14 +354,14 @@ const QS = {
       bands:[
         {maxScore:2.9,label:'No significant fatigue',color:'#1E8449',bg:'#EAF5EE',body:'Your mean score suggests fatigue is not significantly impacting your daily life. Healthy adults average around 2.3.'},
         {maxScore:3.9,label:'Mild to moderate fatigue',color:'#D4880A',bg:'#FEF5E7',body:'Your mean score suggests fatigue is affecting your daily life and warrants attention.'},
-        {maxScore:7,label:'Significant fatigue',color:'#C0392B',bg:'#FDECEA',body:'A mean score of 4 or above indicates clinically significant fatigue. This is consistent with what this book describes.'}
+        {maxScore:7,label:'Significant fatigue',color:'#C0392B',bg:'#FDECEA',body:'A mean score of 4 or above indicates clinically significant fatigue. This level of impact on daily life warrants attention and further investigation.'}
       ]
     },
     {
       id:'pcfs', type:'pcfs',
       name:'Post-COVID Functional Status (PCFS)',
       desc:'Measures overall functional limitations caused by your illness: daily activities, lifestyle, sports and social participation.',
-      time:'1 minute, single grade',
+      time:'5 questions, approx. 1 minute',
       icon:'🫁', color:'#2471A3', bg:'#EAF3FB',
       val:'Validated: Klok et al. (2020), WHO-recommended',
       officialDa:false,
@@ -378,7 +378,7 @@ const QS = {
         {maxGrade:0,label:'No functional limitation',color:'#1E8449',bg:'#EAF5EE',body:'Grade 0: No functional limitations. Your illness does not appear to be restricting your daily life.'},
         {maxGrade:1,label:'Negligible limitation',color:'#2471A3',bg:'#EAF3FB',body:'Grade 1: You have complaints but they are not yet limiting your activities. Worth monitoring.'},
         {maxGrade:2,label:'Slight functional limitation',color:'#D4880A',bg:'#FEF5E7',body:'Grade 2: Some activities are affected. This warrants investigation with a healthcare professional.'},
-        {maxGrade:3,label:'Moderate functional limitation',color:'#C0392B',bg:'#FDECEA',body:'Grade 3: Daily activities are affected. This level of impact is consistent with what this book describes.'},
+        {maxGrade:3,label:'Moderate functional limitation',color:'#C0392B',bg:'#FDECEA',body:'Grade 3: Daily activities are affected. This level of impact warrants investigation with a healthcare professional.'},
         {maxGrade:4,label:'Severe functional limitation',color:'#7B1A0E',bg:'#FDECEA',body:'Grade 4: Significant daily limitations requiring personal care support. Please seek medical attention if you have not already done so.'}
       ]
     },
@@ -386,7 +386,7 @@ const QS = {
       id:'sas', type:'sas', requiresGender:true,
       name:'Survey of Autonomic Symptoms (SAS)',
       desc:'Measures autonomic nervous system symptoms including dizziness, sweating, digestion, bladder and temperature regulation.',
-      time:'5 minutes, 11 to 12 questions',
+      time:'11-12 questions, approx. 5 minutes',
       icon:'🧠', color:'#6C3483', bg:'#F4F0FB',
       val:'Validated: Zilliox et al. (2011)',
       officialDa:false,
@@ -409,7 +409,7 @@ const QS = {
       bands:[
         {maxCount:2,label:'Low autonomic symptom burden',color:'#1E8449',bg:'#EAF5EE',body:'You report few autonomic symptoms. If any persist and concern you, discuss with your doctor.'},
         {maxCount:5,label:'Moderate autonomic symptoms',color:'#D4880A',bg:'#FEF5E7',body:'You report a moderate number of autonomic symptoms. This is commonly seen in Long COVID, POTS and related conditions.'},
-        {maxCount:12,label:'Significant autonomic dysfunction',color:'#6C3483',bg:'#F4F0FB',body:'You report significant autonomic symptoms. This is a key feature of the cascade described in this book and warrants medical investigation.'}
+        {maxCount:12,label:'Significant autonomic dysfunction',color:'#6C3483',bg:'#F4F0FB',body:'You report significant autonomic symptoms. This pattern of autonomic dysfunction warrants medical investigation.'}
       ]
     }
   ],
@@ -418,7 +418,7 @@ const QS = {
       id:'dsq', type:'dsq',
       name:'DSQ Kort Form',
       desc:'Måler ME/CFS-symptomer inklusiv post-anstrengelsesmalaise, træthed, kognitiv og autonom dysfunktion.',
-      time:'8 minutter, 14 symptomer',
+      time:'14 spørgsmål, ca. 8 minutter',
       icon:'🧬', color:'#C0392B', bg:'#FDECEA',
       val:'Valideret: Sunnquist, Lazarus og Jason (2019)',
       officialDa:false,
@@ -435,7 +435,7 @@ const QS = {
       id:'fss', type:'fss',
       name:'Træthedssværhedsskala (FSS)',
       desc:'Måler hvor alvorligt træthed påvirker dit daglige liv: motivation, fysisk funktion, arbejde og sociale aktiviteter.',
-      time:'3 minutter, 9 udsagn',
+      time:'9 spørgsmål, ca. 3 minutter',
       icon:'⚡', color:'#D4880A', bg:'#FEF5E7',
       val:'Valideret: Krupp et al. (1989), over 7.000 citationer',
       officialDa:true,
@@ -464,7 +464,7 @@ const QS = {
       id:'pcfs', type:'pcfs',
       name:'Post-COVID Funktionsstatus (PCFS)',
       desc:'Måler den samlede funktionsbegrænsning forårsaget af din sygdom: daglige aktiviteter, livsstil, sport og social deltagelse.',
-      time:'1 minut, enkelt trin',
+      time:'5 spørgsmål, ca. 1 minut',
       icon:'🫁', color:'#2471A3', bg:'#EAF3FB',
       val:'Valideret: Klok et al. (2020), WHO-anbefalet',
       officialDa:true,
@@ -490,7 +490,7 @@ const QS = {
       id:'sas', type:'sas', requiresGender:true,
       name:'Spørgeskema om autonome symptomer (SAS)',
       desc:'Måler symptomer fra det autonome nervesystem inklusiv svimmelhed, svedtendens, fordøjelse, blære og temperaturregulering.',
-      time:'5 minutter, 11 til 12 spørgsmål',
+      time:'11-12 spørgsmål, ca. 5 minutter',
       icon:'🧠', color:'#6C3483', bg:'#F4F0FB',
       val:'Valideret: Zilliox et al. (2011)',
       officialDa:false,
@@ -791,9 +791,9 @@ Write a warm, honest, plain-language interpretation in 3 to 4 short paragraphs:
 - Acknowledge what the score means for them personally in simple terms
 - Highlight the 2 to 3 most significant responses
 - Be honest but not alarmist
-- End with one sentence of genuine encouragement, not empty positivity, but honest hope grounded in the fact that understanding your symptom pattern is a useful starting point
+- End with one sentence of genuine encouragement grounded in the fact that understanding your symptom pattern is a useful starting point for working with a clinician
 
-Do not mention any book. Do not use medical jargon. Do not diagnose. Write as a knowledgeable friend. Under 200 words. No bullet points, flowing prose only.${isDA?' Respond entirely in Danish.':''}`;
+Critical rules: Do NOT mention any book, publication, or resource. Do NOT suggest reading anything. Do NOT reference any external tool or product. Focus only on the person and their results. Do not use medical jargon. Do not diagnose. Under 200 words. No bullet points, flowing prose only.${isDA?' Respond entirely in Danish.':''}`;
 
   try{
     const r=await fetch('/api/interpret',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
