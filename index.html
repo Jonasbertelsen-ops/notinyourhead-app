@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Not In Your Head — Clinical Self-Assessment</title>
+<title>Not In Your Head</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -13,125 +13,103 @@
     --sage: #D4E0D8;
     --off-white: #F2F0EB;
     --muted: #6A6A62;
-    --red: #C0392B;
     --amber-light: #FEF5E7;
     --navy-light: #EEF2F6;
+    --green: #1E8449;
+    --green-light: #EAF5EE;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--sage); min-height: 100vh; color: #1a1a1a; }
   .app { max-width: 660px; margin: 0 auto; min-height: 100vh; background: var(--off-white); box-shadow: 0 0 60px rgba(31,58,95,0.15); }
-
   .header { background: var(--navy); padding: 28px 36px 24px; position: relative; overflow: hidden; }
   .header::after { content: ''; position: absolute; top: -60px; right: -60px; width: 180px; height: 180px; background: var(--orange); opacity: 0.07; border-radius: 50%; }
   .header-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; color: var(--orange); margin-bottom: 4px; }
   .header-sub { font-size: 12px; color: rgba(255,255,255,0.5); font-style: italic; font-family: 'Playfair Display', serif; }
-
   .progress-bar { height: 3px; background: rgba(202,111,30,0.2); }
   .progress-fill { height: 100%; background: var(--orange); transition: width 0.4s ease; width: 0%; }
-
   .screen { display: none; padding: 32px 36px; animation: fadeIn 0.3s ease; }
   .screen.active { display: block; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
   .eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
-  .screen-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--navy); line-height: 1.3; margin-bottom: 14px; }
-  .screen-body { font-size: 14px; line-height: 1.75; color: var(--muted); margin-bottom: 24px; }
-
-  .warning-box { border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 20px; }
-  .warning-box.amber { background: var(--amber-light); }
-  .warning-box.navy { background: var(--navy-light); border-left-color: var(--navy); }
-  .warning-title { font-size: 12px; font-weight: 500; margin-bottom: 6px; letter-spacing: 0.3px; }
-  .warning-body { font-size: 13px; line-height: 1.65; }
-  .amber .warning-title { color: #7D4E00; }
-  .amber .warning-body { color: #7D4E00; }
-  .navy .warning-title { color: var(--navy); }
-  .navy .warning-body { color: #2C4A6E; }
-
+  .screen-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--navy); line-height: 1.3; margin-bottom: 16px; }
+  .screen-body { font-size: 14px; line-height: 1.8; color: var(--muted); margin-bottom: 20px; }
+  .lang-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; padding: 40px 36px; }
+  .lang-logo { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 900; color: var(--navy); margin-bottom: 8px; text-align: center; }
+  .lang-tag { font-size: 13px; color: var(--muted); font-style: italic; margin-bottom: 48px; text-align: center; }
+  .lang-buttons { display: flex; gap: 16px; width: 100%; max-width: 300px; }
+  .lang-btn { flex: 1; padding: 20px 12px; border-radius: 12px; border: 2px solid #E8E4DC; background: white; cursor: pointer; font-size: 15px; font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--navy); transition: all 0.2s; text-align: center; }
+  .lang-btn:hover { border-color: var(--orange); background: var(--amber-light); transform: translateY(-2px); }
+  .lang-flag { font-size: 30px; display: block; margin-bottom: 8px; }
+  .wbox { border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 16px; }
+  .wbox.amber { background: var(--amber-light); border-left: 4px solid var(--orange); }
+  .wbox.navy { background: var(--navy-light); border-left: 4px solid var(--navy); }
+  .wbox-title { font-size: 12px; font-weight: 500; margin-bottom: 6px; }
+  .wbox.amber .wbox-title { color: #7D4E00; }
+  .wbox.amber .wbox-body { color: #7D4E00; font-size: 13px; line-height: 1.65; }
+  .wbox.navy .wbox-title { color: var(--navy); }
+  .wbox.navy .wbox-body { color: #2C4A6E; font-size: 13px; line-height: 1.65; }
   .q-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
   .q-card { border: 2px solid #E8E4DC; border-radius: 10px; padding: 16px 18px; cursor: pointer; transition: all 0.2s; background: white; display: flex; gap: 14px; align-items: flex-start; }
   .q-card:hover { border-color: var(--orange); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(202,111,30,0.1); }
   .q-card.selected { border-color: var(--orange); background: var(--amber-light); }
   .q-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
-  .q-info .q-name { font-size: 14px; font-weight: 500; color: var(--navy); margin-bottom: 3px; }
-  .q-info .q-desc { font-size: 12px; color: var(--muted); line-height: 1.45; }
-  .q-info .q-time { font-size: 11px; color: var(--orange); font-weight: 500; margin-top: 4px; }
-  .q-info .q-validated { font-size: 10px; color: #1E8449; font-weight: 500; margin-top: 2px; }
-
+  .q-name { font-size: 14px; font-weight: 500; color: var(--navy); margin-bottom: 3px; }
+  .q-desc { font-size: 12px; color: var(--muted); line-height: 1.45; margin-bottom: 4px; }
+  .q-time { font-size: 11px; color: var(--orange); font-weight: 500; margin-bottom: 2px; }
+  .q-val { font-size: 10px; color: var(--green); font-weight: 500; margin-bottom: 2px; }
+  .q-official { font-size: 10px; color: var(--green); font-weight: 500; }
+  .q-trans { font-size: 10px; color: #D4880A; font-weight: 500; }
   .btn { display: block; width: 100%; padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; transition: all 0.2s; text-align: center; }
   .btn-primary { background: var(--orange); color: white; }
   .btn-primary:hover:not(:disabled) { background: #a85a14; transform: translateY(-1px); }
   .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
   .btn-ghost { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); width: auto; padding: 10px 20px; font-size: 13px; }
   .btn-ghost:hover { background: var(--navy); color: white; }
-
-  /* Gender select */
-  .gender-row { display: flex; gap: 12px; margin-bottom: 24px; }
-  .gender-btn { flex: 1; padding: 14px; border-radius: 8px; border: 2px solid #E8E4DC; background: white; cursor: pointer; font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--navy); transition: all 0.2s; text-align: center; }
-  .gender-btn:hover { border-color: var(--orange); }
-  .gender-btn.selected { border-color: var(--orange); background: var(--amber-light); }
-
-  /* Question screen */
+  .two-row { display: flex; gap: 12px; margin-bottom: 24px; }
+  .two-btn { flex: 1; padding: 14px; border-radius: 8px; border: 2px solid #E8E4DC; background: white; cursor: pointer; font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--navy); transition: all 0.2s; text-align: center; }
+  .two-btn:hover { border-color: var(--orange); }
+  .two-btn.selected { border-color: var(--orange); background: var(--amber-light); }
   .q-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
   .q-badge { font-size: 10px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; color: white; }
   .q-counter { font-size: 12px; color: var(--muted); margin-left: auto; }
-
   .question-text { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 700; color: var(--navy); line-height: 1.45; margin-bottom: 6px; }
   .question-note { font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 12px; }
   .honesty-note { font-size: 11px; color: var(--navy); background: var(--navy-light); border-radius: 6px; padding: 8px 12px; margin-bottom: 18px; line-height: 1.5; }
-
-  /* Two-part DSQ question */
-  .dsq-part-label { font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; margin-top: 16px; }
-
-  .options { display: flex; flex-direction: column; gap: 9px; margin-bottom: 24px; }
-  .option { padding: 13px 16px; border-radius: 8px; border: 2px solid #E8E4DC; cursor: pointer; font-size: 14px; color: #1a1a1a; transition: all 0.15s; background: white; display: flex; align-items: center; gap: 12px; }
+  .part-label { font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--orange); margin-bottom: 8px; margin-top: 16px; }
+  .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .option { padding: 12px 16px; border-radius: 8px; border: 2px solid #E8E4DC; cursor: pointer; font-size: 14px; color: #1a1a1a; transition: all 0.15s; background: white; display: flex; align-items: center; gap: 12px; }
   .option:hover { border-color: var(--orange); }
   .option.selected { border-color: var(--orange); background: var(--amber-light); font-weight: 500; color: var(--navy); }
-  .radio { width: 17px; height: 17px; border-radius: 50%; border: 2px solid #ccc; flex-shrink: 0; transition: all 0.15s; }
+  .radio { width: 17px; height: 17px; border-radius: 50%; border: 2px solid #ccc; flex-shrink: 0; }
   .option.selected .radio { border-color: var(--orange); background: var(--orange); }
-
-  /* PCFS grade cards */
   .grade-card { border: 2px solid #E8E4DC; border-radius: 10px; padding: 16px 18px; cursor: pointer; transition: all 0.2s; background: white; margin-bottom: 10px; }
   .grade-card:hover { border-color: var(--orange); }
   .grade-card.selected { border-color: var(--orange); background: var(--amber-light); }
   .grade-num { font-size: 11px; font-weight: 500; color: var(--orange); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
   .grade-title { font-size: 14px; font-weight: 500; color: var(--navy); margin-bottom: 4px; }
   .grade-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
-
-  /* SAS yes/no */
-  .sas-question { border: 1px solid #E8E4DC; border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; background: white; }
-  .sas-q-text { font-size: 14px; font-weight: 500; color: var(--navy); margin-bottom: 12px; }
-  .sas-yn { display: flex; gap: 10px; margin-bottom: 10px; }
-  .sas-yn-btn { flex: 1; padding: 10px; border-radius: 8px; border: 2px solid #E8E4DC; background: white; cursor: pointer; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all 0.15s; text-align: center; }
-  .sas-yn-btn:hover { border-color: var(--orange); }
-  .sas-yn-btn.selected-yes { border-color: var(--orange); background: var(--amber-light); color: var(--navy); }
-  .sas-yn-btn.selected-no { border-color: #ccc; background: #f5f5f5; color: var(--muted); }
-  .sas-severity { display: none; }
-  .sas-severity.visible { display: block; }
-  .sas-sev-label { font-size: 11px; color: var(--muted); margin-bottom: 8px; font-style: italic; }
-  .sas-sev-opts { display: flex; gap: 6px; flex-wrap: wrap; }
-  .sas-sev-opt { padding: 6px 12px; border-radius: 20px; border: 1.5px solid #E8E4DC; background: white; cursor: pointer; font-size: 12px; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
-  .sas-sev-opt:hover { border-color: var(--orange); }
-  .sas-sev-opt.selected { border-color: var(--orange); background: var(--amber-light); font-weight: 500; }
-
+  .sas-yn { display: flex; gap: 10px; margin-bottom: 12px; }
+  .sas-btn { flex: 1; padding: 12px; border-radius: 8px; border: 2px solid #E8E4DC; background: white; cursor: pointer; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all 0.15s; text-align: center; }
+  .sas-btn:hover { border-color: var(--orange); }
+  .sas-btn.yes { border-color: var(--orange); background: var(--amber-light); color: var(--navy); }
+  .sas-btn.no { border-color: #ccc; background: #f5f5f5; color: var(--muted); }
+  .sas-sev { display: none; margin-top: 4px; }
+  .sas-sev.show { display: block; }
+  .sas-sev-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; font-style: italic; }
   .nav-row { display: flex; gap: 10px; align-items: center; }
   .nav-row .btn-primary { flex: 1; }
-
-  /* Results */
   .result-hero { background: var(--navy); margin: -32px -36px 28px; padding: 28px 36px; position: relative; overflow: hidden; }
   .result-hero::after { content: ''; position: absolute; bottom: -40px; right: -40px; width: 130px; height: 130px; background: var(--orange); opacity: 0.12; border-radius: 50%; }
-  .result-hero-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 8px; }
-  .result-score-big { font-family: 'Playfair Display', serif; font-size: 56px; font-weight: 900; color: var(--orange); line-height: 1; }
-  .result-score-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
-  .result-qname { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 10px; font-style: italic; font-family: 'Playfair Display', serif; }
-
+  .r-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 8px; }
+  .r-score { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 900; color: var(--orange); line-height: 1; }
+  .r-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+  .r-qname { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 10px; font-style: italic; font-family: 'Playfair Display', serif; }
   .band-box { border-radius: 10px; padding: 18px 22px; margin-bottom: 16px; }
   .band-title { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
   .band-body { font-size: 13px; line-height: 1.7; }
-
   .ai-box { background: white; border: 1px solid #E8E4DC; border-radius: 10px; padding: 20px 22px; margin-bottom: 16px; }
   .ai-label { font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; }
   .ai-body { font-size: 14px; line-height: 1.8; color: #1a1a1a; }
-
   .loading { display: flex; align-items: center; gap: 8px; padding: 8px 0; }
   .loading-text { font-size: 13px; color: var(--muted); font-style: italic; }
   .dots { display: flex; gap: 5px; }
@@ -139,20 +117,19 @@
   .dots span:nth-child(2) { animation-delay: 0.2s; }
   .dots span:nth-child(3) { animation-delay: 0.4s; }
   @keyframes pulse { 0%,60%,100%{transform:translateY(0);opacity:.3} 30%{transform:translateY(-7px);opacity:1} }
-
   .next-box { background: var(--navy); border-radius: 10px; padding: 20px 22px; margin-bottom: 16px; }
   .next-label { font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--orange); margin-bottom: 14px; }
   .next-item { display: flex; gap: 12px; margin-bottom: 10px; }
   .next-num { width: 22px; height: 22px; border-radius: 50%; background: var(--orange); color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
   .next-text { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.55; }
-
-  .attribution-box { background: var(--navy-light); border-radius: 10px; padding: 18px 22px; margin-bottom: 16px; }
+  .attr-box { background: var(--navy-light); border-radius: 10px; padding: 18px 22px; margin-bottom: 16px; }
   .attr-label { font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--navy); margin-bottom: 12px; }
-  .attr-item { font-size: 12px; color: #2C4A6E; line-height: 1.6; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 0.5px solid #C8D4E0; }
-  .attr-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .attr-name { font-weight: 500; }
-  .attr-validated { color: #1E8449; font-weight: 500; }
-
+  .attr-name { font-weight: 500; font-size: 13px; color: var(--navy); margin-bottom: 4px; }
+  .attr-val { font-size: 11px; color: var(--green); font-weight: 500; margin-bottom: 4px; }
+  .attr-official { font-size: 11px; color: var(--green); font-weight: 500; margin-bottom: 4px; }
+  .attr-trans { font-size: 11px; color: #D4880A; font-weight: 500; margin-bottom: 4px; }
+  .attr-note { font-size: 11px; color: #7D4E00; background: var(--amber-light); border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; line-height: 1.5; }
+  .attr-citation { font-size: 12px; color: #2C4A6E; line-height: 1.6; margin-top: 8px; }
   .footer-note { font-size: 11px; color: var(--muted); text-align: center; line-height: 1.6; padding-top: 16px; border-top: 1px solid #E8E4DC; margin-top: 8px; }
 </style>
 </head>
@@ -160,606 +137,672 @@
 <div class="app">
   <div class="header">
     <div class="header-title">Not In Your Head</div>
-    <div class="header-sub">Clinical Self-Assessment Tool</div>
+    <div class="header-sub" id="headerSub">Clinical Self-Assessment</div>
   </div>
-  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
+
+  <!-- LANGUAGE -->
+  <div class="screen active" id="s-lang">
+    <div class="lang-wrap">
+      <div class="lang-logo">Not In Your Head</div>
+      <div class="lang-tag">Select your language / Vælg dit sprog</div>
+      <div class="lang-buttons">
+        <button class="lang-btn" onclick="setLang('en')"><span class="lang-flag">🇬🇧</span>English</button>
+        <button class="lang-btn" onclick="setLang('da')"><span class="lang-flag">🇩🇰</span>Dansk</button>
+      </div>
+    </div>
+  </div>
 
   <!-- WELCOME -->
-  <div class="screen active" id="screen-welcome">
-    <div class="eyebrow">Before you begin</div>
-    <div class="screen-title">Understanding your symptoms starts here</div>
-    <div class="screen-body">These four questionnaires each measure a different aspect of complex chronic illness — fatigue severity, post-viral functional status, ME/CFS symptom burden, and autonomic dysfunction. Together they build a picture of your dominant symptom pattern.<br><br>Each tool is validated and used by healthcare professionals in clinical practice. Completing them gives you structured, evidence-based language to describe what you are experiencing — and something concrete to bring to your doctor.<br><br>They do not diagnose. But they give you and your clinician a clearer starting point.</div>
-    <div class="warning-box amber">
-      <div class="warning-title">Important — please read first</div>
-      <div class="warning-body">These tools do not diagnose. Depression, anxiety, thyroid problems, anaemia, and other treatable conditions produce similar symptoms. If you have not yet seen a doctor, please do that first. This assessment is for people who have already done so and are still without answers.</div>
-    </div>
-    <div class="warning-box navy">
-      <div class="warning-title">A note on honesty</div>
-      <div class="warning-body">These tools are only useful if you answer honestly. Before each question ask yourself — is this genuinely different from how I was before? Is it consistent over months, not just a bad week? If the honest answer is no — answer no. Honest answers give useful results. Inflated answers mislead you.</div>
-    </div>
-    <button class="btn btn-primary" onclick="goTo('screen-select')">I understand — continue</button>
+  <div class="screen" id="s-welcome">
+    <div class="eyebrow" id="w-ey"></div>
+    <div class="screen-title" id="w-ti"></div>
+    <div class="screen-body" id="w-bo"></div>
+    <div class="wbox amber"><div class="wbox-title" id="w-i-ti"></div><div class="wbox-body" id="w-i-bo"></div></div>
+    <div class="wbox navy"><div class="wbox-title" id="w-h-ti"></div><div class="wbox-body" id="w-h-bo"></div></div>
+    <button class="btn btn-primary" id="w-btn" onclick="showSelect()"></button>
   </div>
 
   <!-- SELECT -->
-  <div class="screen" id="screen-select">
-    <div class="eyebrow">Step 1 of 3</div>
-    <div class="screen-title">Choose your questionnaire</div>
-    <div class="screen-body">Select the one that best matches your situation. You can return and try others.</div>
+  <div class="screen" id="s-select">
+    <div class="eyebrow" id="sel-ey"></div>
+    <div class="screen-title" id="sel-ti"></div>
+    <div class="screen-body" id="sel-bo"></div>
     <div class="q-grid" id="qGrid"></div>
-    <button class="btn btn-primary" id="startBtn" disabled onclick="startQ()">Start assessment</button>
+    <button class="btn btn-primary" id="startBtn" disabled onclick="startQ()"></button>
   </div>
 
-  <!-- GENDER (SAS only) -->
-  <div class="screen" id="screen-gender">
-    <div class="eyebrow">One quick question</div>
-    <div class="screen-title">Please select your sex</div>
-    <div class="screen-body">The autonomic symptom questionnaire includes one question that only applies to men. This determines which version you receive.</div>
-    <div class="gender-row">
-      <button class="gender-btn" id="genderF" onclick="selectGender('female')">Female</button>
-      <button class="gender-btn" id="genderM" onclick="selectGender('male')">Male</button>
+  <!-- GENDER -->
+  <div class="screen" id="s-gender">
+    <div class="eyebrow" id="g-ey"></div>
+    <div class="screen-title" id="g-ti"></div>
+    <div class="screen-body" id="g-bo"></div>
+    <div class="two-row">
+      <button class="two-btn" id="gF" onclick="selectGender('female')"></button>
+      <button class="two-btn" id="gM" onclick="selectGender('male')"></button>
     </div>
-    <button class="btn btn-primary" id="genderContinue" disabled onclick="startQAfterGender()">Continue</button>
+    <button class="btn btn-primary" id="gCont" disabled onclick="initQ()"></button>
   </div>
 
   <!-- QUESTIONS -->
-  <div class="screen" id="screen-questions">
+  <div class="screen" id="s-questions">
     <div class="q-meta">
       <div class="q-badge" id="qBadge"></div>
-      <div class="q-counter" id="qCounter"></div>
+      <div class="q-counter" id="qCtr"></div>
     </div>
-    <div class="question-text" id="questionText"></div>
-    <div class="question-note" id="questionNote"></div>
-    <div class="honesty-note">Answer based on what is genuinely different for you — not what could apply to anyone on a bad day.</div>
-    <div id="questionBody"></div>
+    <div class="question-text" id="qText"></div>
+    <div class="question-note" id="qNote"></div>
+    <div class="honesty-note" id="hNote"></div>
+    <div id="qBody"></div>
     <div class="nav-row">
-      <button class="btn-ghost btn" onclick="prevQ()">← Back</button>
-      <button class="btn btn-primary" id="nextBtn" disabled onclick="nextQ()">Next</button>
+      <button class="btn-ghost btn" id="backBtn" onclick="prevQ()"></button>
+      <button class="btn btn-primary" id="nextBtn" disabled onclick="nextQ()"></button>
     </div>
   </div>
 
   <!-- RESULTS -->
-  <div class="screen" id="screen-results">
+  <div class="screen" id="s-results">
     <div class="result-hero">
-      <div class="result-hero-label">Your result</div>
-      <div class="result-score-big" id="scoreDisplay"></div>
-      <div class="result-score-sub" id="scoreSubDisplay"></div>
-      <div class="result-qname" id="scoreQName"></div>
+      <div class="r-label" id="rLbl"></div>
+      <div class="r-score" id="rScore"></div>
+      <div class="r-sub" id="rSub"></div>
+      <div class="r-qname" id="rQName"></div>
     </div>
     <div class="band-box" id="bandBox"></div>
     <div class="ai-box">
-      <div class="ai-label">Personalised interpretation</div>
-      <div class="ai-body" id="aiInterpretation">
-        <div class="loading">
-          <div class="dots"><span></span><span></span><span></span></div>
-          <div class="loading-text">Analysing your responses...</div>
-        </div>
+      <div class="ai-label" id="rAiLbl"></div>
+      <div class="ai-body" id="aiBox">
+        <div class="loading"><div class="dots"><span></span><span></span><span></span></div><div class="loading-text" id="rLoad"></div></div>
       </div>
     </div>
-    <div class="next-box" id="nextStepsBox"></div>
-    <div class="attribution-box" id="attributionBox"></div>
-    <button class="btn btn-primary" style="margin-bottom:16px" onclick="goTo('screen-select')">Take another questionnaire</button>
-    <div class="footer-note">These are validated clinical tools. They do not diagnose — only a qualified clinician can do that. Always discuss your results with a healthcare professional.<br><br>— Jonas Bertelsen, MSc. Osteopath · Physical Therapist · Long COVID Patient</div>
+    <div class="next-box" id="nextBox"></div>
+    <div class="attr-box" id="attrBox"></div>
+    <button class="btn btn-primary" style="margin-bottom:16px" id="rAnother" onclick="showSelect()"></button>
+    <div class="footer-note" id="rFooter"></div>
   </div>
 </div>
 
 <script>
-// ── Questionnaire data ──────────────────────────────────────────────────────
-
-const QUESTIONNAIRES = [
-  {
-    id: 'dsq',
-    name: 'DSQ Short Form',
-    desc: 'Measures ME/CFS symptoms including post-exertional malaise, fatigue, cognitive and autonomic dysfunction.',
-    time: '~8 minutes · 14 symptoms',
-    icon: '🧬',
-    color: '#C0392B',
-    bg: '#FDECEA',
-    validated: 'Validated — Sunnquist, Lazarus & Jason (2019)',
-    type: 'dsq',
-    instruction: 'For each symptom, rate both how often you have had it AND how much it has bothered you — over the past 6 months.',
-    questions: [
-      'Fatigue or extreme tiredness',
-      'Next day soreness or fatigue after non-strenuous, everyday activities',
-      'Minimum exercise makes you physically tired',
-      'Feeling unrefreshed after you wake up in the morning',
-      'Pain or aching in your muscles',
-      'Bloating',
-      'Problems remembering things',
-      'Difficulty paying attention for a long period of time',
-      'Irritable bowel problems',
-      'Feeling unsteady on your feet, like you might fall',
-      'Cold limbs (e.g. arms, legs, hands)',
-      'Feeling hot or cold for no reason',
-      'Flu-like symptoms',
-      'Some smells, foods, medications, or chemicals make you feel sick'
-    ],
-    freqOptions: ['None of the time','A little of the time','About half the time','Most of the time','All of the time'],
-    sevOptions: ['Not present','Mild','Moderate','Severe','Very severe'],
-    attribution: 'DSQ Short Form (DSQ-SF) — Sunnquist, M., Lazarus, S., & Jason, L.A. (2019). The development of a short form of the DePaul Symptom Questionnaire. Rehabilitation Psychology, 64(4), 453–462. DePaul University. Freely available for clinical use.',
-    bands: [
-      { label: 'Low symptom burden', color: '#1E8449', bg: '#EAF5EE', body: 'Few symptoms reach the clinical threshold (moderate frequency and severity). If you have concerns, discuss with your doctor.' },
-      { label: 'Moderate symptom burden', color: '#D4880A', bg: '#FEF5E7', body: 'Several symptoms reach the clinical threshold. Some core ME/CFS symptoms are present. This warrants investigation with a healthcare professional.' },
-      { label: 'Pattern consistent with ME/CFS criteria', color: '#C0392B', bg: '#FDECEA', body: 'Your symptom pattern meets the core requirements of the Canadian ME/CFS criteria — fatigue, post-exertional malaise, unrefreshing sleep, cognitive symptoms, plus symptoms across multiple additional domains. This book is likely highly relevant to your situation.' }
-    ]
+// ── Translations ─────────────────────────────────────────────────────────────
+const T = {
+  en: {
+    headerSub:'Clinical Self-Assessment',
+    wEy:'Before you begin', wTi:'Understanding your symptoms starts here',
+    wBo:'These four questionnaires each measure a different aspect of complex chronic illness: fatigue severity, post-viral functional status, ME/CFS symptom burden, and autonomic dysfunction. Together they build a picture of your dominant symptom pattern.\n\nEach tool is validated and used by healthcare professionals in clinical practice. Completing them gives you structured, evidence-based language to describe what you are experiencing and something concrete to bring to your doctor.\n\nThey do not diagnose. But they give you and your clinician a clearer starting point.\n\nThis app contains four freely available, validated questionnaires. Other recognised tools such as the Chalder Fatigue Scale and COMPASS-31 are not included as they are protected by copyright. You can access them through your doctor or a specialist clinic.',
+    wITi:'Important — please read first',
+    wIBo:'These tools do not diagnose. Several common and treatable conditions can produce similar symptoms and lead to false positive results, including depression, anxiety, hypothyroidism, iron deficiency and sleep apnoea. These are examples only and other similar conditions exist. We therefore recommend that you are assessed for these by your own doctor before using the results here as a basis for further investigation.',
+    wHTi:'A note on honesty',
+    wHBo:'These tools are only useful if you answer honestly. Before each question ask yourself: is this genuinely different from how I was before? Has it been consistent over months, not just a bad week? If the honest answer is no, answer no. It can be a good idea to go through the questions with a family member or close friend who knows you well and can help you assess whether your answers reflect reality. Honest answers give useful results. Inflated answers mislead you.',
+    wBtn:'I understand — continue',
+    selEy:'Step 1 of 3', selTi:'Choose your questionnaire', selBo:'Select the one that best matches your situation. You can return and try others.',
+    startBtn:'Start assessment',
+    gEy:'One quick question', gTi:'Please select your sex', gBo:'The autonomic symptom questionnaire includes one question that only applies to men. This determines which version you receive.',
+    gF:'Female', gM:'Male', gCont:'Continue',
+    back:'Back', next:'Next', seeResults:'See results',
+    hNote:'Answer based on what is genuinely different for you, not what could apply to anyone on a bad day.',
+    rLbl:'Your result', rAiLbl:'Personalised interpretation', rLoad:'Analysing your responses...',
+    rNextLbl:'What to do next',
+    rN1:'Screenshot or save this result to share with your doctor.',
+    rN2:'Book an appointment with your GP and bring this result.',
+    rN3:'Read the book with your dominant pattern in mind. Your highest-scoring symptoms point to the most relevant sections.',
+    rAttrLbl:'About this questionnaire',
+    rVal:'Validated clinical tool',
+    rOfficial:'Official Danish version',
+    rTrans:'Translated by the publisher',
+    rTransNote:'This is not an officially validated translation. The validated English version should be used if in doubt.',
+    rAnother:'Take another questionnaire',
+    rFooter:'These are validated clinical tools. They do not diagnose. Only a qualified clinician can do that. Always discuss your results with a healthcare professional.\n\nJonas Bertelsen, MSc. Osteopath, Physical Therapist, Long COVID Patient',
+    dsqFLbl:'Frequency — over the past 6 months, how often?',
+    dsqSLbl:'Severity — how much has it bothered you?',
+    dsqFOpts:['None of the time','A little of the time','About half the time','Most of the time','All of the time'],
+    dsqSOpts:['Not present','Mild','Moderate','Severe','Very severe'],
+    sasYes:'Yes, I have this', sasNo:'No, I do not',
+    sasSSymLbl:'How much does it bother you?',
+    sasSConLbl:'How often do you experience this?',
+    sasSSymOpts:['Not at all','A little','Some','A moderate amount','A lot'],
+    sasSConOpts:['Never','Occasionally','Sometimes','Often','All the time'],
+    grade:'Grade',
+    scoreSubDsq:'symptoms meeting clinical threshold',
+    scoreSubFss:'mean score out of 7',
+    scoreSubSas:'symptoms present, total impact score'
   },
-  {
-    id: 'fss',
-    name: 'Fatigue Severity Scale (FSS)',
-    desc: 'Measures how severely fatigue affects your daily life — motivation, physical function, work and social activities.',
-    time: '~3 minutes · 9 statements',
-    icon: '⚡',
-    color: '#D4880A',
-    bg: '#FEF5E7',
-    validated: 'Validated — Krupp et al. (1989), 7,000+ citations',
-    type: 'likert',
-    instruction: 'During the past week, I have found that:',
-    questions: [
-      { text: 'My motivation is lower when I am fatigued.', sub: '' },
-      { text: 'Exercise brings on my fatigue.', sub: '' },
-      { text: 'I am easily fatigued.', sub: '' },
-      { text: 'Fatigue interferes with my physical functioning.', sub: '' },
-      { text: 'Fatigue causes frequent problems for me.', sub: '' },
-      { text: 'My fatigue prevents sustained physical functioning.', sub: '' },
-      { text: 'Fatigue interferes with carrying out certain duties and responsibilities.', sub: '' },
-      { text: 'Fatigue is among my three most disabling symptoms.', sub: '' },
-      { text: 'Fatigue interferes with my work, family, or social life.', sub: '' }
-    ],
-    options: [
-      { label: '1 — Strongly disagree', value: 1 },
-      { label: '2', value: 2 },
-      { label: '3', value: 3 },
-      { label: '4 — Neutral', value: 4 },
-      { label: '5', value: 5 },
-      { label: '6', value: 6 },
-      { label: '7 — Strongly agree', value: 7 }
-    ],
-    attribution: 'Fatigue Severity Scale (FSS) — Krupp, L.B., LaRocca, N.G., Muir-Nash, J., & Steinberg, A.D. (1989). The fatigue severity scale: application to patients with multiple sclerosis and systemic lupus erythematosus. Archives of Neurology, 46(10), 1121–1123. Freely available for non-profit use.',
-    bands: [
-      { maxScore: 2.9, label: 'No significant fatigue', color: '#1E8449', bg: '#EAF5EE', body: 'Your mean score suggests fatigue is not significantly impacting your daily life. Healthy adults average around 2.3.' },
-      { maxScore: 3.9, label: 'Mild to moderate fatigue', color: '#D4880A', bg: '#FEF5E7', body: 'Your mean score suggests fatigue is affecting your daily life and warrants attention.' },
-      { maxScore: 7, label: 'Significant fatigue', color: '#C0392B', bg: '#FDECEA', body: 'Your mean score of 4 or above indicates clinically significant fatigue. This is consistent with what this book describes.' }
-    ]
-  },
-  {
-    id: 'pcfs',
-    name: 'Post-COVID Functional Status (PCFS)',
-    desc: 'Measures overall functional limitations caused by your illness — daily activities, lifestyle, sports and social participation.',
-    time: '~1 minute · single grade',
-    icon: '🫁',
-    color: '#2471A3',
-    bg: '#EAF3FB',
-    validated: 'Validated — Klok et al. (2020), WHO-recommended',
-    type: 'pcfs',
-    instruction: 'Think about how you have been over the past week on average. Choose the grade that best describes your situation.',
-    grades: [
-      { grade: 0, title: 'No functional limitations', desc: 'No complaints related to your illness. Fully able to carry out all usual activities, lifestyle, sports and social activities.' },
-      { grade: 1, title: 'Negligible functional limitations', desc: 'You have complaints but they do not lead to any restrictions in daily activities, lifestyle, sports or social activities.' },
-      { grade: 2, title: 'Slight functional limitations', desc: 'Complaints lead to some limitations on demanding activities. You may be working at a reduced pace or have given up strenuous sports or leisure activities.' },
-      { grade: 3, title: 'Moderate functional limitations', desc: 'Complaints lead to limitations on daily activities. You may be working fewer hours or have given up all sports and leisure activities. You can still manage personal care independently.' },
-      { grade: 4, title: 'Severe functional limitations', desc: 'Complaints cause inability to perform most daily activities. You need help with personal care activities.' }
-    ],
-    attribution: 'Post-COVID-19 Functional Status Scale (PCFS) — Klok, F.A., et al. (2020). The Post-COVID-19 Functional Status scale: a tool to measure functional status over time after COVID-19. European Respiratory Journal, 56(1), 2001494. Creative Commons Attribution Non-Commercial 4.0.',
-    bands: [
-      { maxGrade: 0, label: 'No functional limitation', color: '#1E8449', bg: '#EAF5EE', body: 'Grade 0: No functional limitations. Your illness does not appear to be restricting your daily life.' },
-      { maxGrade: 1, label: 'Negligible limitation', color: '#2471A3', bg: '#EAF3FB', body: 'Grade 1: You have complaints but they are not yet limiting your activities. Worth monitoring.' },
-      { maxGrade: 2, label: 'Slight functional limitation', color: '#D4880A', bg: '#FEF5E7', body: 'Grade 2: Some activities are affected. This warrants investigation with a healthcare professional.' },
-      { maxGrade: 3, label: 'Moderate functional limitation', color: '#C0392B', bg: '#FDECEA', body: 'Grade 3: Daily activities are affected. This level of impact is consistent with what this book describes.' },
-      { maxGrade: 4, label: 'Severe functional limitation', color: '#7B1A0E', bg: '#FDECEA', body: 'Grade 4: Significant daily limitations requiring personal care support. Please seek medical attention if you have not already done so.' }
-    ]
-  },
-  {
-    id: 'sas',
-    name: 'Survey of Autonomic Symptoms (SAS)',
-    desc: 'Measures autonomic nervous system symptoms including dizziness, sweating, digestion, bladder and temperature regulation.',
-    time: '~5 minutes · 11–12 questions',
-    icon: '🧠',
-    color: '#6C3483',
-    bg: '#F4F0FB',
-    validated: 'Validated — Zilliox et al. (2011)',
-    type: 'sas',
-    requiresGender: true,
-    instruction: 'For each symptom, indicate whether you have experienced it in the past 6 months, and if so, how much it bothers you.',
-    questions: [
-      { text: 'Do you have lightheadedness?', sub: 'Feeling dizzy or faint, especially when standing up' },
-      { text: 'Do you have a dry mouth or dry eyes?', sub: '' },
-      { text: 'Are your feet pale or blue?', sub: 'Unusual colour change in your feet' },
-      { text: 'Are your feet colder than the rest of your body?', sub: '' },
-      { text: 'Is sweating in your feet decreased compared to the rest of your body?', sub: '' },
-      { text: 'Is sweating in your feet decreased or absent after exercise or during hot weather?', sub: '' },
-      { text: 'Is sweating in your hands increased compared to the rest of your body?', sub: '' },
-      { text: 'Do you have nausea, vomiting, or bloating after eating a small meal?', sub: '' },
-      { text: 'Do you have persistent diarrhoea?', sub: 'More than 3 loose bowel movements per day' },
-      { text: 'Do you have persistent constipation?', sub: 'Less than 1 bowel movement every other day' },
-      { text: 'Do you have leaking of urine?', sub: 'Urinary incontinence' },
-      { text: 'Do you have difficulty obtaining an erection?', sub: 'Male only', maleOnly: true }
-    ],
-    severityOptions: ['Not at all', 'A little', 'Some', 'A moderate amount', 'A lot'],
-    attribution: 'Survey of Autonomic Symptoms (SAS) — Zilliox, L., et al. (2011). Assessing autonomic dysfunction in early diabetic neuropathy: The Survey of Autonomic Symptoms. Neurology, 76(12), 1099–1105. Freely available — no permission required for use.',
-    bands: [
-      { maxCount: 2, label: 'Low autonomic symptom burden', color: '#1E8449', bg: '#EAF5EE', body: 'You report few autonomic symptoms. If any persist and concern you, discuss with your doctor.' },
-      { maxCount: 5, label: 'Moderate autonomic symptoms', color: '#D4880A', bg: '#FEF5E7', body: 'You report a moderate number of autonomic symptoms. This is commonly seen in Long COVID, POTS and related conditions.' },
-      { maxCount: 12, label: 'Significant autonomic dysfunction', color: '#6C3483', bg: '#F4F0FB', body: 'You report significant autonomic symptoms. This is a key feature of the cascade described in this book and warrants medical investigation.' }
-    ]
+  da: {
+    headerSub:'Klinisk selvvurdering',
+    wEy:'Inden du starter', wTi:'Forstå dine symptomer her',
+    wBo:'Disse fire spørgeskemaer måler hver især et forskelligt aspekt af kompleks kronisk sygdom: træthedssværhedsgrad, post-viral funktionsstatus, ME/CFS-symptombyrde og autonom dysfunktion. Tilsammen tegner de et billede af dit dominerende symptommønster.\n\nHvert redskab er valideret og bruges af sundhedsprofessionelle i klinisk praksis. At udfylde dem giver dig et struktureret, evidensbaseret sprog til at beskrive det du oplever og noget konkret at tage med til din læge.\n\nDe stiller ingen diagnose. Men de giver dig og din kliniker et klarere udgangspunkt.\n\nDenne app indeholder fire frit tilgængelige, validerede spørgeskemaer. Andre anerkendte redskaber som Chalder Fatigue Scale og COMPASS-31 er ikke inkluderet da de er ophavsretligt beskyttet. Du kan finde dem via din læge eller en specialiseret klinik.',
+    wITi:'Vigtigt — læs venligst dette først',
+    wIBo:'Disse redskaber stiller ingen diagnose. Flere almindelige og behandlelige tilstande kan give lignende symptomer og føre til falsk positive resultater, herunder depression, angst, hypothyroidisme, jernmangel og søvnapnø. Dette er blot eksempler, og der findes andre lignende tilstande. Vi anbefaler derfor at du bliver udredt for disse hos din egen læge inden du bruger resultaterne her som grundlag for videre undersøgelse.',
+    wHTi:'En note om ærlighed',
+    wHBo:'Disse redskaber er kun nyttige hvis du svarer ærligt. Spørg dig selv før hvert spørgsmål: er dette genuint anderledes end før? Har det stået på i måneder, ikke bare en dårlig uge? Hvis det ærlige svar er nej, svar nej. Det kan være en god idé at have et familiemedlem eller en nær ven med til at gennemgå spørgsmålene, én der kender dig godt og kan hjælpe dig med at vurdere om dine svar afspejler virkeligheden. Ærlige svar giver brugbare resultater. Oppustede svar vildleder dig.',
+    wBtn:'Jeg forstår — fortsæt',
+    selEy:'Trin 1 af 3', selTi:'Vælg dit spørgeskema', selBo:'Vælg det der passer bedst til din situation. Du kan vende tilbage og prøve de andre.',
+    startBtn:'Start vurdering',
+    gEy:'Et hurtigt spørgsmål', gTi:'Angiv venligst dit køn', gBo:'Spørgeskemaet om autonome symptomer indeholder ét spørgsmål der kun gælder for mænd. Dette afgør hvilken version du modtager.',
+    gF:'Kvinde', gM:'Mand', gCont:'Fortsæt',
+    back:'Tilbage', next:'Næste', seeResults:'Se resultater',
+    hNote:'Svar ud fra hvad der genuint er anderledes for dig, ikke hvad der kunne gælde for alle på en dårlig dag.',
+    rLbl:'Dit resultat', rAiLbl:'Personlig fortolkning', rLoad:'Analyserer dine svar...',
+    rNextLbl:'Hvad gør du nu',
+    rN1:'Tag et screenshot eller gem dette resultat og del det med din læge.',
+    rN2:'Book en tid hos din praktiserende læge og medbring dette resultat.',
+    rN3:'Læs bogen med dit dominerende mønster i tankerne. Dine højest scorende symptomer peger på de mest relevante afsnit.',
+    rAttrLbl:'Om dette spørgeskema',
+    rVal:'Valideret klinisk redskab',
+    rOfficial:'Officiel dansk version',
+    rTrans:'Oversat af udgiveren',
+    rTransNote:'Dette er ikke en officielt valideret oversættelse. Den validerede engelske version bør anvendes ved tvivl.',
+    rAnother:'Tag et andet spørgeskema',
+    rFooter:'Dette er validerede kliniske redskaber. De stiller ingen diagnose. Kun en kvalificeret kliniker kan gøre det. Diskuter altid dine resultater med en sundhedsprofessionel.\n\nJonas Bertelsen, MSc. Osteopat, Fysioterapeut, Long COVID patient',
+    dsqFLbl:'Hyppighed — over de seneste 6 måneder, hvor ofte?',
+    dsqSLbl:'Sværhedsgrad — over de seneste 6 måneder, hvor meget har dette symptom generet dig?',
+    dsqFOpts:['På intet tidspunkt','Lidt af tiden','Cirka halvdelen af tiden','Det meste af tiden','Hele tiden'],
+    dsqSOpts:['Slet ikke','Mildt generende','Moderat generende','Svært generende','Meget svært generende'],
+    sasYes:'Ja, det har jeg', sasNo:'Nej, det har jeg ikke',
+    sasSSymLbl:'Hvor meget generer det dig?',
+    sasSConLbl:'I hvor høj grad oplever du dette?',
+    sasSSymOpts:['Slet ikke','Let generende','Moderat generende','Meget generende','Ekstremt generende'],
+    sasSConOpts:['Aldrig','Enkelte gange','Lejlighedsvis','Ofte','Hele tiden'],
+    grade:'Grad',
+    scoreSubDsq:'symptomer over klinisk tærskel',
+    scoreSubFss:'gennemsnitsscore ud af 7',
+    scoreSubSas:'symptomer til stede, samlet påvirkningsscore'
   }
-];
-
-// ── State ───────────────────────────────────────────────────────────────────
-let selectedQIdx = null;
-let currentQ = 0;
-let gender = null;
-let answers = [];
-let dsqFreqAnswers = [];
-let dsqSevAnswers = [];
-let sasAnswers = []; // {present: bool, severity: 0-5}
-
-// ── Utilities ───────────────────────────────────────────────────────────────
-function setProgress(pct) { document.getElementById('progressFill').style.width = pct + '%'; }
-
-function goTo(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
-}
-
-// ── Init ────────────────────────────────────────────────────────────────────
-window.onload = function() {
-  setProgress(5);
-  renderQCards();
 };
 
-function renderQCards() {
-  document.getElementById('qGrid').innerHTML = QUESTIONNAIRES.map((q, i) => `
-    <div class="q-card" id="qcard-${i}" onclick="selectQ(${i})">
+// ── Questionnaire Data ────────────────────────────────────────────────────────
+const QS = {
+  en: [
+    {
+      id:'dsq', type:'dsq',
+      name:'DSQ Short Form',
+      desc:'Measures ME/CFS symptoms including post-exertional malaise, fatigue, cognitive and autonomic dysfunction.',
+      time:'8 minutes, 14 symptoms',
+      icon:'🧬', color:'#C0392B', bg:'#FDECEA',
+      val:'Validated: Sunnquist, Lazarus and Jason (2019)',
+      officialDa:false,
+      instruction:'For each symptom, rate both how often you have had it AND how much it has bothered you, over the past 6 months.',
+      questions:['Fatigue or extreme tiredness','Next day soreness or fatigue after non-strenuous, everyday activities','Minimum exercise makes you physically tired','Feeling unrefreshed after you wake up in the morning','Pain or aching in your muscles','Bloating','Problems remembering things','Difficulty paying attention for a long period of time','Irritable bowel problems','Feeling unsteady on your feet, like you might fall','Cold limbs (e.g. arms, legs, hands)','Feeling hot or cold for no reason','Flu-like symptoms','Some smells, foods, medications, or chemicals make you feel sick'],
+      attribution:'DSQ Short Form (DSQ-SF): Sunnquist, M., Lazarus, S., and Jason, L.A. (2019). Rehabilitation Psychology, 64(4), 453-462. DePaul University. Freely available for clinical use.',
+      bands:[
+        {label:'Low symptom burden',color:'#1E8449',bg:'#EAF5EE',body:'Few symptoms reach the clinical threshold of moderate frequency and severity. If you have concerns, discuss with your doctor.'},
+        {label:'Moderate symptom burden',color:'#D4880A',bg:'#FEF5E7',body:'Several symptoms reach the clinical threshold. Some core ME/CFS symptoms are present. This warrants investigation with a healthcare professional.'},
+        {label:'Pattern consistent with ME/CFS criteria',color:'#C0392B',bg:'#FDECEA',body:'Your symptom pattern meets the core requirements of the Canadian ME/CFS criteria: fatigue, post-exertional malaise, unrefreshing sleep, cognitive symptoms, plus symptoms across multiple additional domains. This book is likely highly relevant to your situation.'}
+      ]
+    },
+    {
+      id:'fss', type:'fss',
+      name:'Fatigue Severity Scale (FSS)',
+      desc:'Measures how severely fatigue affects your daily life: motivation, physical function, work and social activities.',
+      time:'3 minutes, 9 statements',
+      icon:'⚡', color:'#D4880A', bg:'#FEF5E7',
+      val:'Validated: Krupp et al. (1989), 7,000 citations',
+      officialDa:false,
+      instruction:'During the past week, I have found that:',
+      questions:[
+        {text:'My motivation is lower when I am fatigued.'},
+        {text:'Exercise brings on my fatigue.'},
+        {text:'I am easily fatigued.'},
+        {text:'Fatigue interferes with my physical functioning.'},
+        {text:'Fatigue causes frequent problems for me.'},
+        {text:'My fatigue prevents sustained physical functioning.'},
+        {text:'Fatigue interferes with carrying out certain duties and responsibilities.'},
+        {text:'Fatigue is among my three most disabling symptoms.'},
+        {text:'Fatigue interferes with my work, family, or social life.'}
+      ],
+      options:[{l:'1 Strongly disagree',v:1},{l:'2',v:2},{l:'3',v:3},{l:'4 Neutral',v:4},{l:'5',v:5},{l:'6',v:6},{l:'7 Strongly agree',v:7}],
+      attribution:'Fatigue Severity Scale (FSS): Krupp, L.B., et al. (1989). Archives of Neurology, 46(10), 1121-1123. Freely available for non-profit use.',
+      bands:[
+        {maxScore:2.9,label:'No significant fatigue',color:'#1E8449',bg:'#EAF5EE',body:'Your mean score suggests fatigue is not significantly impacting your daily life. Healthy adults average around 2.3.'},
+        {maxScore:3.9,label:'Mild to moderate fatigue',color:'#D4880A',bg:'#FEF5E7',body:'Your mean score suggests fatigue is affecting your daily life and warrants attention.'},
+        {maxScore:7,label:'Significant fatigue',color:'#C0392B',bg:'#FDECEA',body:'A mean score of 4 or above indicates clinically significant fatigue. This is consistent with what this book describes.'}
+      ]
+    },
+    {
+      id:'pcfs', type:'pcfs',
+      name:'Post-COVID Functional Status (PCFS)',
+      desc:'Measures overall functional limitations caused by your illness: daily activities, lifestyle, sports and social participation.',
+      time:'1 minute, single grade',
+      icon:'🫁', color:'#2471A3', bg:'#EAF3FB',
+      val:'Validated: Klok et al. (2020), WHO-recommended',
+      officialDa:false,
+      instruction:'Think about how you have been on average over the past week. Choose the grade that best describes your situation.',
+      grades:[
+        {grade:0,title:'No functional limitations',desc:'No complaints related to your illness. Fully able to carry out all usual activities, lifestyle, sports and social activities.'},
+        {grade:1,title:'Negligible functional limitations',desc:'You have complaints but they do not lead to any restrictions in daily activities, lifestyle, sports or social activities.'},
+        {grade:2,title:'Slight functional limitations',desc:'Complaints lead to some limitations on demanding activities. You may be working at a reduced pace or have given up strenuous sports or leisure activities.'},
+        {grade:3,title:'Moderate functional limitations',desc:'Complaints lead to limitations on daily activities. You may be working fewer hours or have given up all sports and leisure activities. You can still manage personal care independently.'},
+        {grade:4,title:'Severe functional limitations',desc:'Complaints cause inability to perform most daily activities. You need help with personal care activities.'}
+      ],
+      attribution:'Post-COVID-19 Functional Status Scale (PCFS): Klok, F.A., et al. (2020). European Respiratory Journal, 56(1), 2001494. Creative Commons Attribution Non-Commercial 4.0.',
+      bands:[
+        {maxGrade:0,label:'No functional limitation',color:'#1E8449',bg:'#EAF5EE',body:'Grade 0: No functional limitations. Your illness does not appear to be restricting your daily life.'},
+        {maxGrade:1,label:'Negligible limitation',color:'#2471A3',bg:'#EAF3FB',body:'Grade 1: You have complaints but they are not yet limiting your activities. Worth monitoring.'},
+        {maxGrade:2,label:'Slight functional limitation',color:'#D4880A',bg:'#FEF5E7',body:'Grade 2: Some activities are affected. This warrants investigation with a healthcare professional.'},
+        {maxGrade:3,label:'Moderate functional limitation',color:'#C0392B',bg:'#FDECEA',body:'Grade 3: Daily activities are affected. This level of impact is consistent with what this book describes.'},
+        {maxGrade:4,label:'Severe functional limitation',color:'#7B1A0E',bg:'#FDECEA',body:'Grade 4: Significant daily limitations requiring personal care support. Please seek medical attention if you have not already done so.'}
+      ]
+    },
+    {
+      id:'sas', type:'sas', requiresGender:true,
+      name:'Survey of Autonomic Symptoms (SAS)',
+      desc:'Measures autonomic nervous system symptoms including dizziness, sweating, digestion, bladder and temperature regulation.',
+      time:'5 minutes, 11 to 12 questions',
+      icon:'🧠', color:'#6C3483', bg:'#F4F0FB',
+      val:'Validated: Zilliox et al. (2011)',
+      officialDa:false,
+      instruction:'For each symptom, indicate whether you have experienced it in the past 6 months, and if so, how much it affects you.',
+      questions:[
+        {text:'Do you have lightheadedness?',sub:'Feeling dizzy or faint, especially when standing up',type:'symptom'},
+        {text:'Do you have a dry mouth or dry eyes?',sub:'',type:'symptom'},
+        {text:'Are your feet pale or blue?',sub:'Unusual colour change in your feet',type:'condition'},
+        {text:'Are your feet colder than the rest of your body?',sub:'',type:'condition'},
+        {text:'Is sweating in your feet decreased compared to the rest of your body?',sub:'',type:'condition'},
+        {text:'Is sweating in your feet decreased or absent after exercise or during hot weather?',sub:'',type:'condition'},
+        {text:'Is sweating in your hands increased compared to the rest of your body?',sub:'',type:'condition'},
+        {text:'Do you have nausea, vomiting, or bloating after eating a small meal?',sub:'',type:'symptom'},
+        {text:'Do you have persistent diarrhoea?',sub:'More than 3 loose bowel movements per day',type:'symptom'},
+        {text:'Do you have persistent constipation?',sub:'Less than 1 bowel movement every other day',type:'symptom'},
+        {text:'Do you have leaking of urine?',sub:'Urinary incontinence',type:'symptom'},
+        {text:'Do you have difficulty obtaining an erection?',sub:'Male only',maleOnly:true,type:'symptom'}
+      ],
+      attribution:'Survey of Autonomic Symptoms (SAS): Zilliox, L., et al. (2011). Neurology, 76(12), 1099-1105. Freely available, no permission required for use.',
+      bands:[
+        {maxCount:2,label:'Low autonomic symptom burden',color:'#1E8449',bg:'#EAF5EE',body:'You report few autonomic symptoms. If any persist and concern you, discuss with your doctor.'},
+        {maxCount:5,label:'Moderate autonomic symptoms',color:'#D4880A',bg:'#FEF5E7',body:'You report a moderate number of autonomic symptoms. This is commonly seen in Long COVID, POTS and related conditions.'},
+        {maxCount:12,label:'Significant autonomic dysfunction',color:'#6C3483',bg:'#F4F0FB',body:'You report significant autonomic symptoms. This is a key feature of the cascade described in this book and warrants medical investigation.'}
+      ]
+    }
+  ],
+  da: [
+    {
+      id:'dsq', type:'dsq',
+      name:'DSQ Kort Form',
+      desc:'Måler ME/CFS-symptomer inklusiv post-anstrengelsesmalaise, træthed, kognitiv og autonom dysfunktion.',
+      time:'8 minutter, 14 symptomer',
+      icon:'🧬', color:'#C0392B', bg:'#FDECEA',
+      val:'Valideret: Sunnquist, Lazarus og Jason (2019)',
+      officialDa:false,
+      instruction:'For hvert symptom skal du vurdere både hvor ofte du har haft det OG hvor meget det har generet dig, over de seneste 6 måneder.',
+      questions:['Træthed eller ekstrem udmattelse','Ømhed eller træthed dagen efter ikke-anstrengende, dagligdags aktiviteter','Minimal motion gør dig fysisk træt','Følelse af ikke at være udhvilet når du vågner om morgenen','Smerter eller ømhed i musklerne','Oppustethed','Problemer med at huske ting','Vanskeligheder ved at opretholde opmærksomheden over længere tid','Irritabel tarm-problemer','Følelse af at være ustabil på benene, som om du kunne falde','Kolde lemmer (f.eks. arme, ben, hænder)','Følelse af at være varm eller kold uden grund','Influenzalignende symptomer','Nogle lugte, madvarer, medicin eller kemikalier gør dig utilpas'],
+      attribution:'DSQ Kort Form (DSQ-SF): Sunnquist, M., Lazarus, S., og Jason, L.A. (2019). Rehabilitation Psychology, 64(4), 453-462. DePaul University. Frit tilgængeligt til klinisk brug.',
+      bands:[
+        {label:'Lav symptombyrde',color:'#1E8449',bg:'#EAF5EE',body:'Få symptomer når den kliniske tærskel for moderat hyppighed og sværhedsgrad. Tal med din læge hvis symptomerne fortsætter.'},
+        {label:'Moderat symptombyrde',color:'#D4880A',bg:'#FEF5E7',body:'Adskillige symptomer når den kliniske tærskel. Nogle kerne-ME/CFS-symptomer er til stede. Dette bør undersøges nærmere hos en sundhedsprofessionel.'},
+        {label:'Mønster i overensstemmelse med ME/CFS-kriterier',color:'#C0392B',bg:'#FDECEA',body:'Dit symptommønster opfylder kernekravene i de canadiske ME/CFS-kriterier: træthed, post-anstrengelsesmalaise, ikke-udhvilende søvn, kognitive symptomer samt symptomer på tværs af flere yderligere domæner. Denne bog er sandsynligvis meget relevant for din situation.'}
+      ]
+    },
+    {
+      id:'fss', type:'fss',
+      name:'Træthedssværhedsskala (FSS)',
+      desc:'Måler hvor alvorligt træthed påvirker dit daglige liv: motivation, fysisk funktion, arbejde og sociale aktiviteter.',
+      time:'3 minutter, 9 udsagn',
+      icon:'⚡', color:'#D4880A', bg:'#FEF5E7',
+      val:'Valideret: Krupp et al. (1989), over 7.000 citationer',
+      officialDa:true,
+      officialDaSource:'Officiel dansk version: Lorentzen et al. (2014), Odense Universitetshospital',
+      instruction:'I løbet af den seneste uge har jeg oplevet at:',
+      questions:[
+        {text:'Min motivation er lavere, når jeg er træt.'},
+        {text:'Motion gør mig træt.'},
+        {text:'Jeg bliver let træt.'},
+        {text:'Træthed begrænser min fysiske formåen.'},
+        {text:'Træthed skaber tit problemer for mig.'},
+        {text:'Træthed forhindrer længerevarende fysisk aktivitet.'},
+        {text:'Træthed påvirker min evne til at udføre visse pligter og ansvar.'},
+        {text:'Træthed er et af mine 3 mest funktionsindskrænkende symptomer.'},
+        {text:'Træthed påvirker mit arbejde, familieliv og fritid.'}
+      ],
+      options:[{l:'1 Meget uenig',v:1},{l:'2',v:2},{l:'3',v:3},{l:'4 Neutral',v:4},{l:'5',v:5},{l:'6',v:6},{l:'7 Meget enig',v:7}],
+      attribution:'Træthedssværhedsskala (FSS): Krupp, L.B., et al. (1989). Archives of Neurology, 46(10), 1121-1123. Dansk oversættelse: Lorentzen, K., et al. (2014). Danish Medical Journal, 61(4). Valideret dansk version, Odense Universitetshospital.',
+      bands:[
+        {maxScore:2.9,label:'Ingen betydelig træthed',color:'#1E8449',bg:'#EAF5EE',body:'Dit gennemsnitsscore tyder på at træthed ikke påvirker dit daglige liv betydeligt. Raske voksne scorer i gennemsnit omkring 2,3.'},
+        {maxScore:3.9,label:'Mild til moderat træthed',color:'#D4880A',bg:'#FEF5E7',body:'Dit score tyder på at træthed påvirker dit daglige liv og kræver opmærksomhed.'},
+        {maxScore:7,label:'Betydelig træthed',color:'#C0392B',bg:'#FDECEA',body:'Et gennemsnitsscore på 4 eller derover indikerer klinisk signifikant træthed. Dette er i overensstemmelse med det denne bog beskriver.'}
+      ]
+    },
+    {
+      id:'pcfs', type:'pcfs',
+      name:'Post-COVID Funktionsstatus (PCFS)',
+      desc:'Måler den samlede funktionsbegrænsning forårsaget af din sygdom: daglige aktiviteter, livsstil, sport og social deltagelse.',
+      time:'1 minut, enkelt trin',
+      icon:'🫁', color:'#2471A3', bg:'#EAF3FB',
+      val:'Valideret: Klok et al. (2020), WHO-anbefalet',
+      officialDa:true,
+      officialDaSource:'Officiel dansk version: Klok et al. (2020)',
+      instruction:'Tænk på hvordan du har haft det i gennemsnit i løbet af den seneste uge. Vælg det trin der bedst beskriver din situation.',
+      grades:[
+        {grade:0,title:'Ingen funktionsbegrænsninger',desc:'Ingen symptomer, smerter, depression eller angst.'},
+        {grade:1,title:'Ubetydelige funktionsbegrænsninger',desc:'Alle vanlige opgaver og aktiviteter i hjemmet eller på arbejde kan udføres som vanligt på trods af symptomer, smerter, depression eller angst.'},
+        {grade:2,title:'Lette funktionsbegrænsninger',desc:'Alle vanlige opgaver og aktiviteter i hjemmet eller på arbejde udføres langsommere eller undgås af og til på grund af symptomer, smerter, depression eller angst.'},
+        {grade:3,title:'Moderate funktionsbegrænsninger',desc:'Alle vanlige opgaver og aktiviteter i hjemmet eller på arbejde ændres (reduceres) på grund af symptomer, smerter, depression eller angst.'},
+        {grade:4,title:'Svære funktionsbegrænsninger',desc:'Behov for hjælp til dagligdagsaktiviteter på grund af symptomer, smerter, depression eller angst: har brug for hjemmehjælp.'}
+      ],
+      attribution:'Post-COVID-19 Funktionsstatus Skala (PCFS): Klok, F.A., et al. (2020). European Respiratory Journal, 56(1), 2001494. Creative Commons Attribution Non-Commercial 4.0. Officiel dansk version tilgængelig via osf.io/qgpdv/',
+      bands:[
+        {maxGrade:0,label:'Ingen funktionsbegrænsning',color:'#1E8449',bg:'#EAF5EE',body:'Grad 0: Ingen funktionsbegrænsninger. Din sygdom ser ikke ud til at begrænse dit daglige liv.'},
+        {maxGrade:1,label:'Ubetydelig begrænsning',color:'#2471A3',bg:'#EAF3FB',body:'Grad 1: Du har klager men de begrænser endnu ikke dine aktiviteter. Værd at følge op på.'},
+        {maxGrade:2,label:'Let funktionsbegrænsning',color:'#D4880A',bg:'#FEF5E7',body:'Grad 2: Nogle aktiviteter er påvirket. Dette bør undersøges hos en sundhedsprofessionel.'},
+        {maxGrade:3,label:'Moderat funktionsbegrænsning',color:'#C0392B',bg:'#FDECEA',body:'Grad 3: Daglige aktiviteter er påvirket. Dette niveau svarer til det denne bog beskriver.'},
+        {maxGrade:4,label:'Svær funktionsbegrænsning',color:'#7B1A0E',bg:'#FDECEA',body:'Grad 4: Betydelige daglige begrænsninger der kræver hjælp til personlig pleje. Opsøg venligst lægehjælp hvis du ikke allerede har gjort det.'}
+      ]
+    },
+    {
+      id:'sas', type:'sas', requiresGender:true,
+      name:'Spørgeskema om autonome symptomer (SAS)',
+      desc:'Måler symptomer fra det autonome nervesystem inklusiv svimmelhed, svedtendens, fordøjelse, blære og temperaturregulering.',
+      time:'5 minutter, 11 til 12 spørgsmål',
+      icon:'🧠', color:'#6C3483', bg:'#F4F0FB',
+      val:'Valideret: Zilliox et al. (2011)',
+      officialDa:false,
+      instruction:'For hvert symptom skal du angive om du har oplevet det i de seneste 6 måneder, og hvis ja, hvor meget det påvirker dig.',
+      questions:[
+        {text:'Har du svimmelhed eller fornemmelse af at ville besvime?',sub:'',type:'symptom'},
+        {text:'Har du tør mund eller tørre øjne?',sub:'',type:'symptom'},
+        {text:'Er dine fødder blege eller blå?',sub:'',type:'condition'},
+        {text:'Er dine fødder koldere end resten af din krop?',sub:'',type:'condition'},
+        {text:'Er svedproduktionen i dine fødder reduceret sammenlignet med resten af din krop?',sub:'',type:'condition'},
+        {text:'Er svedproduktionen i dine fødder reduceret eller fraværende efter motion eller i varmt vejr?',sub:'',type:'condition'},
+        {text:'Er svedproduktionen i dine hænder øget sammenlignet med resten af din krop?',sub:'',type:'condition'},
+        {text:'Har du kvalme, opkastning eller oppustethed efter et lille måltid?',sub:'',type:'symptom'},
+        {text:'Har du vedvarende diarré?',sub:'Mere end 3 løse afføringer om dagen',type:'symptom'},
+        {text:'Har du vedvarende forstoppelse?',sub:'Mindre end 1 afføring hver anden dag',type:'symptom'},
+        {text:'Har du ufrivillig vandladning?',sub:'',type:'symptom'},
+        {text:'Har du besvær med at få erektion?',sub:'Kun mænd',maleOnly:true,type:'symptom'}
+      ],
+      attribution:'Spørgeskema om autonome symptomer (SAS): Zilliox, L., et al. (2011). Neurology, 76(12), 1099-1105. Frit tilgængeligt, ingen tilladelse krævet.',
+      bands:[
+        {maxCount:2,label:'Lav autonom symptombyrde',color:'#1E8449',bg:'#EAF5EE',body:'Du rapporterer få autonome symptomer. Tal med din læge hvis nogen af dem vedvarer og bekymrer dig.'},
+        {maxCount:5,label:'Moderate autonome symptomer',color:'#D4880A',bg:'#FEF5E7',body:'Du rapporterer et moderat antal autonome symptomer. Dette ses ofte ved Long COVID, POTS og relaterede tilstande.'},
+        {maxCount:12,label:'Betydelig autonom dysfunktion',color:'#6C3483',bg:'#F4F0FB',body:'Du rapporterer betydelige autonome symptomer. Dette er et nøgletræk ved kaskaden beskrevet i denne bog og bør undersøges medicinsk.'}
+      ]
+    }
+  ]
+};
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let lang='en', qIdx=null, curQ=0, gender=null;
+let ans=[], fAns=[], sAns=[], sasAns=[];
+
+// ── Utils ─────────────────────────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+const t=k=>T[lang][k]||T.en[k]||k;
+const qq=()=>QS[lang][qIdx];
+const getQs=()=>{
+  const q=qq();
+  if(q.type==='sas') return gender==='male'?q.questions:q.questions.filter(x=>!x.maleOnly);
+  if(q.type==='pcfs') return q.grades;
+  return q.questions;
+};
+function prog(p){$('pFill').style.width=p+'%';}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0);}
+
+// ── Language ──────────────────────────────────────────────────────────────────
+function setLang(l){
+  lang=l;
+  $('headerSub').textContent=t('headerSub');
+  $('w-ey').textContent=t('wEy');
+  $('w-ti').textContent=t('wTi');
+  $('w-bo').innerHTML=t('wBo').split('\n\n').map(p=>`<p style="margin-bottom:10px">${p}</p>`).join('');
+  $('w-i-ti').textContent=t('wITi');
+  $('w-i-bo').textContent=t('wIBo');
+  $('w-h-ti').textContent=t('wHTi');
+  $('w-h-bo').textContent=t('wHBo');
+  $('w-btn').textContent=t('wBtn');
+  show('s-welcome');
+  prog(5);
+}
+
+// ── Select ────────────────────────────────────────────────────────────────────
+function showSelect(){
+  $('sel-ey').textContent=t('selEy');
+  $('sel-ti').textContent=t('selTi');
+  $('sel-bo').textContent=t('selBo');
+  $('startBtn').textContent=t('startBtn');
+  $('startBtn').disabled=true;
+  qIdx=null;
+  $('qGrid').innerHTML=QS[lang].map((q,i)=>{
+    let langLine='';
+    if(lang==='da'){
+      langLine=q.officialDa
+        ?`<div class="q-official">&#10003; ${q.officialDaSource}</div>`
+        :`<div class="q-trans">&#8635; ${t('rTrans')}</div>`;
+    }
+    return `<div class="q-card" id="qc${i}" onclick="selQ(${i})">
       <div class="q-icon" style="background:${q.bg}">${q.icon}</div>
-      <div class="q-info">
+      <div>
         <div class="q-name">${q.name}</div>
         <div class="q-desc">${q.desc}</div>
         <div class="q-time">${q.time}</div>
-        <div class="q-validated">✓ ${q.validated}</div>
+        <div class="q-val">&#10003; ${q.val}</div>
+        ${langLine}
       </div>
-    </div>`).join('');
-}
-
-function selectQ(i) {
-  document.querySelectorAll('.q-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById('qcard-' + i).classList.add('selected');
-  selectedQIdx = i;
-  document.getElementById('startBtn').disabled = false;
-}
-
-function startQ() {
-  const q = QUESTIONNAIRES[selectedQIdx];
-  if (q.requiresGender) {
-    gender = null;
-    document.getElementById('genderF').classList.remove('selected');
-    document.getElementById('genderM').classList.remove('selected');
-    document.getElementById('genderContinue').disabled = true;
-    goTo('screen-gender');
-  } else {
-    initQuestionnaire();
-  }
-}
-
-function selectGender(g) {
-  gender = g;
-  document.getElementById('genderF').classList.toggle('selected', g === 'female');
-  document.getElementById('genderM').classList.toggle('selected', g === 'male');
-  document.getElementById('genderContinue').disabled = false;
-}
-
-function startQAfterGender() {
-  initQuestionnaire();
-}
-
-function initQuestionnaire() {
-  currentQ = 0;
-  const q = QUESTIONNAIRES[selectedQIdx];
-  const count = getQuestions().length;
-  answers = new Array(count).fill(null);
-  dsqFreqAnswers = new Array(count).fill(null);
-  dsqSevAnswers = new Array(count).fill(null);
-  sasAnswers = getQuestions().map(() => ({ present: null, severity: null }));
-  renderQuestion();
-  goTo('screen-questions');
-  setProgress(20);
-}
-
-function getQuestions() {
-  const q = QUESTIONNAIRES[selectedQIdx];
-  if (q.type === 'sas') {
-    return gender === 'male' ? q.questions : q.questions.filter(qq => !qq.maleOnly);
-  }
-  if (q.type === 'pcfs') return q.grades;
-  return q.questions;
-}
-
-function renderQuestion() {
-  const q = QUESTIONNAIRES[selectedQIdx];
-  const qs = getQuestions();
-  const total = qs.length;
-  const item = qs[currentQ];
-
-  document.getElementById('qBadge').textContent = q.name;
-  document.getElementById('qBadge').style.background = q.color;
-  document.getElementById('qCounter').textContent = `${currentQ + 1} of ${total}`;
-  setProgress(20 + ((currentQ / total) * 65));
-
-  const nextBtn = document.getElementById('nextBtn');
-  nextBtn.textContent = currentQ === total - 1 ? 'See results' : 'Next';
-
-  if (q.type === 'pcfs') {
-    document.getElementById('questionText').textContent = 'Which of the following best describes your situation over the past week?';
-    document.getElementById('questionNote').textContent = q.instruction;
-    renderPCFS(q);
-    nextBtn.disabled = answers[currentQ] === null;
-    return;
-  }
-
-  if (q.type === 'dsq') {
-    document.getElementById('questionText').textContent = item;
-    document.getElementById('questionNote').textContent = q.instruction;
-    renderDSQ(q);
-    nextBtn.disabled = dsqFreqAnswers[currentQ] === null || dsqSevAnswers[currentQ] === null;
-    return;
-  }
-
-  if (q.type === 'sas') {
-    document.getElementById('questionText').textContent = item.text;
-    document.getElementById('questionNote').textContent = item.sub || q.instruction;
-    renderSAS(q);
-    const a = sasAnswers[currentQ];
-    nextBtn.disabled = a.present === null || (a.present === true && a.severity === null);
-    return;
-  }
-
-  // FSS likert
-  document.getElementById('questionText').textContent = item.text || item;
-  document.getElementById('questionNote').textContent = q.instruction;
-  renderLikert(q);
-  nextBtn.disabled = answers[currentQ] === null;
-}
-
-function renderLikert(q) {
-  document.getElementById('questionBody').innerHTML = `
-    <div class="options">${q.options.map((opt, i) => `
-      <div class="option ${answers[currentQ] === i ? 'selected' : ''}" onclick="selectLikert(${i})">
-        <div class="radio"></div>${opt.label}
-      </div>`).join('')}
     </div>`;
+  }).join('');
+  show('s-select');
+  prog(10);
 }
 
-function selectLikert(i) {
-  answers[currentQ] = i;
-  document.querySelectorAll('.option').forEach((el, idx) => el.classList.toggle('selected', idx === i));
-  document.getElementById('nextBtn').disabled = false;
+function selQ(i){
+  document.querySelectorAll('.q-card').forEach(c=>c.classList.remove('selected'));
+  $('qc'+i).classList.add('selected');
+  qIdx=i;
+  $('startBtn').disabled=false;
 }
 
-function renderDSQ(q) {
-  document.getElementById('questionBody').innerHTML = `
-    <div class="dsq-part-label">Frequency — over the past 6 months, how often?</div>
-    <div class="options" id="freqOpts">${q.freqOptions.map((opt, i) => `
-      <div class="option ${dsqFreqAnswers[currentQ] === i ? 'selected' : ''}" onclick="selectDSQFreq(${i})">
-        <div class="radio"></div>${opt}
-      </div>`).join('')}
+function startQ(){
+  const q=qq();
+  if(q.requiresGender){
+    gender=null;
+    $('g-ey').textContent=t('gEy');
+    $('g-ti').textContent=t('gTi');
+    $('g-bo').textContent=t('gBo');
+    $('gF').textContent=t('gF');
+    $('gM').textContent=t('gM');
+    $('gCont').textContent=t('gCont');
+    $('gCont').disabled=true;
+    $('gF').classList.remove('selected');
+    $('gM').classList.remove('selected');
+    show('s-gender');
+  } else { initQ(); }
+}
+
+function selectGender(g){
+  gender=g;
+  $('gF').classList.toggle('selected',g==='female');
+  $('gM').classList.toggle('selected',g==='male');
+  $('gCont').disabled=false;
+}
+
+// ── Questions ─────────────────────────────────────────────────────────────────
+function initQ(){
+  curQ=0;
+  const n=getQs().length;
+  ans=new Array(n).fill(null);
+  fAns=new Array(n).fill(null);
+  sAns=new Array(n).fill(null);
+  sasAns=getQs().map(()=>({present:null,severity:null}));
+  renderQ();
+  show('s-questions');
+  prog(20);
+}
+
+function renderQ(){
+  const q=qq(), qs=getQs(), n=qs.length, item=qs[curQ];
+  $('qBadge').textContent=q.name;
+  $('qBadge').style.background=q.color;
+  $('qCtr').textContent=`${curQ+1} / ${n}`;
+  $('hNote').textContent=t('hNote');
+  $('backBtn').textContent=t('back');
+  prog(20+((curQ/n)*65));
+  const nb=$('nextBtn');
+  nb.textContent=curQ===n-1?t('seeResults'):t('next');
+
+  if(q.type==='pcfs'){
+    $('qText').textContent=lang==='da'?'Vælg det trin der bedst beskriver din situation den seneste uge':'Choose the grade that best describes your situation over the past week';
+    $('qNote').textContent=q.instruction;
+    renderPCFS(q); nb.disabled=ans[0]===null; return;
+  }
+  if(q.type==='dsq'){
+    $('qText').textContent=item;
+    $('qNote').textContent=q.instruction;
+    renderDSQ(q); nb.disabled=fAns[curQ]===null||sAns[curQ]===null; return;
+  }
+  if(q.type==='sas'){
+    $('qText').textContent=item.text;
+    $('qNote').textContent=item.sub||'';
+    renderSAS(q,item);
+    const a=sasAns[curQ];
+    nb.disabled=a.present===null||(a.present===true&&a.severity===null); return;
+  }
+  $('qText').textContent=item.text;
+  $('qNote').textContent=q.instruction;
+  renderFSS(q); nb.disabled=ans[curQ]===null;
+}
+
+function renderFSS(q){
+  $('qBody').innerHTML=`<div class="options">${q.options.map((o,i)=>`<div class="option ${ans[curQ]===i?'selected':''}" onclick="selFSS(${i})"><div class="radio"></div>${o.l}</div>`).join('')}</div>`;
+}
+function selFSS(i){ans[curQ]=i;document.querySelectorAll('.option').forEach((el,j)=>el.classList.toggle('selected',j===i));$('nextBtn').disabled=false;}
+
+function renderDSQ(q){
+  const fo=t('dsqFOpts'),so=t('dsqSOpts');
+  $('qBody').innerHTML=`
+    <div class="part-label">${t('dsqFLbl')}</div>
+    <div class="options" id="fo">${fo.map((o,i)=>`<div class="option ${fAns[curQ]===i?'selected':''}" onclick="selF(${i})"><div class="radio"></div>${o}</div>`).join('')}</div>
+    <div class="part-label">${t('dsqSLbl')}</div>
+    <div class="options" id="so">${so.map((o,i)=>`<div class="option ${sAns[curQ]===i?'selected':''}" onclick="selS(${i})"><div class="radio"></div>${o}</div>`).join('')}</div>`;
+}
+function selF(i){fAns[curQ]=i;document.querySelectorAll('#fo .option').forEach((el,j)=>el.classList.toggle('selected',j===i));$('nextBtn').disabled=fAns[curQ]===null||sAns[curQ]===null;}
+function selS(i){sAns[curQ]=i;document.querySelectorAll('#so .option').forEach((el,j)=>el.classList.toggle('selected',j===i));$('nextBtn').disabled=fAns[curQ]===null||sAns[curQ]===null;}
+
+function renderPCFS(q){
+  $('qBody').innerHTML=q.grades.map((g,i)=>`<div class="grade-card ${ans[0]===i?'selected':''}" onclick="selGrade(${i})"><div class="grade-num">${t('grade')} ${g.grade}</div><div class="grade-title">${g.title}</div><div class="grade-desc">${g.desc}</div></div>`).join('');
+}
+function selGrade(i){ans[0]=i;document.querySelectorAll('.grade-card').forEach((el,j)=>el.classList.toggle('selected',j===i));$('nextBtn').disabled=false;}
+
+function renderSAS(q,item){
+  const a=sasAns[curQ];
+  const isCond=item.type==='condition';
+  const sevLbl=isCond?t('sasSConLbl'):t('sasSSymLbl');
+  const sevOpts=isCond?t('sasSConOpts'):t('sasSSymOpts');
+  $('qBody').innerHTML=`
+    <div class="sas-yn">
+      <button class="sas-btn ${a.present===true?'yes':''}" onclick="sasPres(true)">${t('sasYes')}</button>
+      <button class="sas-btn ${a.present===false?'no':''}" onclick="sasPres(false)">${t('sasNo')}</button>
     </div>
-    <div class="dsq-part-label">Severity — how much has it bothered you?</div>
-    <div class="options" id="sevOpts">${q.sevOptions.map((opt, i) => `
-      <div class="option ${dsqSevAnswers[currentQ] === i ? 'selected' : ''}" onclick="selectDSQSev(${i})">
-        <div class="radio"></div>${opt}
-      </div>`).join('')}
+    <div class="sas-sev ${a.present===true?'show':''}" id="sasSev">
+      <div class="sas-sev-label">${sevLbl}</div>
+      <div class="options">${sevOpts.map((o,i)=>`<div class="option ${a.severity===i+1?'selected':''}" onclick="sasSev(${i+1})"><div class="radio"></div>${o}</div>`).join('')}</div>
     </div>`;
 }
+function sasPres(v){sasAns[curQ].present=v;if(!v)sasAns[curQ].severity=null;renderSAS(qq(),getQs()[curQ]);const a=sasAns[curQ];$('nextBtn').disabled=a.present===null||(a.present===true&&a.severity===null);}
+function sasSev(v){sasAns[curQ].severity=v;document.querySelectorAll('#sasSev .option').forEach((el,i)=>el.classList.toggle('selected',i+1===v));$('nextBtn').disabled=false;}
 
-function selectDSQFreq(i) {
-  dsqFreqAnswers[currentQ] = i;
-  document.querySelectorAll('#freqOpts .option').forEach((el, idx) => el.classList.toggle('selected', idx === i));
-  document.getElementById('nextBtn').disabled = dsqFreqAnswers[currentQ] === null || dsqSevAnswers[currentQ] === null;
-}
+function prevQ(){if(curQ>0){curQ--;renderQ();}else{qq().requiresGender?show('s-gender'):showSelect();}}
+function nextQ(){const n=getQs().length;if(curQ<n-1){curQ++;renderQ();}else showResults();}
 
-function selectDSQSev(i) {
-  dsqSevAnswers[currentQ] = i;
-  document.querySelectorAll('#sevOpts .option').forEach((el, idx) => el.classList.toggle('selected', idx === i));
-  document.getElementById('nextBtn').disabled = dsqFreqAnswers[currentQ] === null || dsqSevAnswers[currentQ] === null;
-}
+// ── Results ───────────────────────────────────────────────────────────────────
+async function showResults(){
+  const q=qq();
+  prog(90);
+  show('s-results');
+  $('rLbl').textContent=t('rLbl');
+  $('rAiLbl').textContent=t('rAiLbl');
+  $('rLoad').textContent=t('rLoad');
+  $('rAnother').textContent=t('rAnother');
+  $('rFooter').innerHTML=t('rFooter').split('\n\n').map(p=>`<p style="margin-bottom:6px">${p}</p>`).join('');
 
-function renderPCFS(q) {
-  document.getElementById('questionBody').innerHTML = `
-    <div>${q.grades.map((g, i) => `
-      <div class="grade-card ${answers[0] === i ? 'selected' : ''}" onclick="selectGrade(${i})">
-        <div class="grade-num">Grade ${g.grade}</div>
-        <div class="grade-title">${g.title}</div>
-        <div class="grade-desc">${g.desc}</div>
-      </div>`).join('')}
-    </div>`;
-}
+  let score,sub,band,summary;
 
-function selectGrade(i) {
-  answers[0] = i;
-  document.querySelectorAll('.grade-card').forEach((el, idx) => el.classList.toggle('selected', idx === i));
-  document.getElementById('nextBtn').disabled = false;
-}
+  if(q.type==='dsq'){
+    const m=i=>(fAns[i]||0)>=2&&(sAns[i]||0)>=2;
+    const fat=m(0),pem=m(1)||m(2),unref=m(3),neuro=m(6)||m(7);
+    const dPain=m(4)||m(5),dAuto=m(8)||m(9),dNE=m(10)||m(11),dImm=m(12)||m(13);
+    const addDom=[dPain,dAuto,dNE,dImm].filter(Boolean).length;
+    const core=[fat,pem,unref,neuro].filter(Boolean).length;
+    const canMet=fat&&pem&&unref&&neuro&&addDom>=2;
+    const tot=q.questions.filter((_,i)=>m(i)).length;
+    score=`${tot} / 14`;
+    sub=t('scoreSubDsq');
+    band=canMet?q.bands[2]:(core>=3||tot>=5)?q.bands[1]:q.bands[0];
+    summary=[`Threshold met: ${tot}/14`,`Core: fat=${fat},pem=${pem},sleep=${unref},cog=${neuro}`,`Domains: pain=${dPain},auto=${dAuto},NE=${dNE},imm=${dImm}`,`Canadian criteria: ${canMet}`,'',
+      ...q.questions.map((item,i)=>`${item}: F=${fAns[i]}/4 S=${sAns[i]}/4`)].join('\n');
 
-function renderSAS(q) {
-  const a = sasAnswers[currentQ];
-  document.getElementById('questionBody').innerHTML = `
-    <div class="sas-question">
-      <div class="sas-yn">
-        <button class="sas-yn-btn ${a.present === true ? 'selected-yes' : ''}" onclick="selectSASPresent(true)">Yes — I have this</button>
-        <button class="sas-yn-btn ${a.present === false ? 'selected-no' : ''}" onclick="selectSASPresent(false)">No — I don't</button>
-      </div>
-      <div class="sas-severity ${a.present === true ? 'visible' : ''}" id="sasSeverity">
-        <div class="sas-sev-label">How much does it bother you?</div>
-        <div class="sas-sev-opts">${q.severityOptions.map((opt, i) => `
-          <div class="sas-sev-opt ${a.severity === i + 1 ? 'selected' : ''}" onclick="selectSASSeverity(${i + 1})">${opt}</div>`).join('')}
-        </div>
-      </div>
-    </div>`;
-}
+  } else if(q.type==='fss'){
+    const vals=ans.map(a=>q.options[a]?.v||0);
+    const mean=vals.reduce((s,v)=>s+v,0)/vals.length;
+    score=mean.toFixed(1);
+    sub=t('scoreSubFss');
+    band=q.bands.find(b=>mean<=b.maxScore)||q.bands[q.bands.length-1];
+    summary=q.questions.map((item,i)=>`${item.text}: ${q.options[ans[i]]?.l||'N/A'}`).join('\n');
 
-function selectSASPresent(val) {
-  sasAnswers[currentQ].present = val;
-  if (!val) { sasAnswers[currentQ].severity = null; }
-  renderSAS(QUESTIONNAIRES[selectedQIdx]);
-  const a = sasAnswers[currentQ];
-  document.getElementById('nextBtn').disabled = a.present === null || (a.present === true && a.severity === null);
-}
+  } else if(q.type==='pcfs'){
+    const gi=ans[0],g=q.grades[gi];
+    score=`${t('grade')} ${g.grade}`;
+    sub=g.title;
+    band=q.bands.find(b=>g.grade<=b.maxGrade)||q.bands[q.bands.length-1];
+    summary=`Grade ${g.grade}: ${g.title}. ${g.desc}`;
 
-function selectSASSeverity(val) {
-  sasAnswers[currentQ].severity = val;
-  document.querySelectorAll('.sas-sev-opt').forEach((el, i) => el.classList.toggle('selected', i + 1 === val));
-  document.getElementById('nextBtn').disabled = false;
-}
-
-function prevQ() {
-  if (currentQ > 0) { currentQ--; renderQuestion(); }
-  else {
-    const q = QUESTIONNAIRES[selectedQIdx];
-    goTo(q.requiresGender ? 'screen-gender' : 'screen-select');
-  }
-}
-
-function nextQ() {
-  const qs = getQuestions();
-  if (currentQ < qs.length - 1) { currentQ++; renderQuestion(); }
-  else showResults();
-}
-
-// ── Results ─────────────────────────────────────────────────────────────────
-async function showResults() {
-  const q = QUESTIONNAIRES[selectedQIdx];
-  setProgress(90);
-  goTo('screen-results');
-
-  let score, scoreLabel, band, resultSummary;
-
-  if (q.type === 'dsq') {
-    // Official 2-2 threshold: symptom counts only if frequency >= 2 AND severity >= 2
-    const meets = (i) => (dsqFreqAnswers[i] || 0) >= 2 && (dsqSevAnswers[i] || 0) >= 2;
-
-    // Core symptoms per Canadian ME/CFS criteria
-    const hasFatigue = meets(0);
-    const hasPEM = meets(1) || meets(2);
-    const hasUnrefreshed = meets(3);
-    const hasNeuro = meets(6) || meets(7);
-
-    // Additional symptom domains
-    const domainPain = meets(4) || meets(5);
-    const domainAuto = meets(8) || meets(9);
-    const domainNeuroendo = meets(10) || meets(11);
-    const domainImmune = meets(12) || meets(13);
-    const additionalDomains = [domainPain, domainAuto, domainNeuroendo, domainImmune].filter(Boolean).length;
-
-    const coreCount = [hasFatigue, hasPEM, hasUnrefreshed, hasNeuro].filter(Boolean).length;
-    const meetsCanadian = hasFatigue && hasPEM && hasUnrefreshed && hasNeuro && additionalDomains >= 2;
-    const totalMeeting = q.questions.filter((_, i) => meets(i)).length;
-
-    score = totalMeeting + ' / 14';
-    scoreLabel = 'symptoms meeting clinical threshold (frequency ≥ moderate, severity ≥ moderate)';
-
-    if (meetsCanadian) {
-      band = q.bands[2];
-    } else if (coreCount >= 3 || totalMeeting >= 5) {
-      band = q.bands[1];
-    } else {
-      band = q.bands[0];
-    }
-
-    resultSummary = [
-      `Symptoms meeting 2-2 threshold: ${totalMeeting}/14`,
-      `Core symptoms: Fatigue=${hasFatigue}, PEM=${hasPEM}, Unrefreshing sleep=${hasUnrefreshed}, Cognitive=${hasNeuro}`,
-      `Additional domains: Pain=${domainPain}, Autonomic=${domainAuto}, Neuroendocrine=${domainNeuroendo}, Immune=${domainImmune}`,
-      `Pattern consistent with Canadian ME/CFS criteria: ${meetsCanadian}`,
-      '',
-      ...q.questions.map((qq, i) => `${qq}: Frequency=${dsqFreqAnswers[i]}/4, Severity=${dsqSevAnswers[i]}/4`)
-    ].join('\n');
-
-  } else if (q.type === 'fss') {
-    const vals = answers.map((a, i) => q.options[a]?.value || 0);
-    const mean = vals.reduce((s, v) => s + v, 0) / vals.length;
-    score = mean.toFixed(1);
-    scoreLabel = 'mean score out of 7';
-    band = q.bands.find(b => mean <= b.maxScore) || q.bands[q.bands.length - 1];
-    resultSummary = q.questions.map((qq, i) => `${qq.text}: ${q.options[answers[i]]?.label || 'N/A'}`).join('\n');
-
-  } else if (q.type === 'pcfs') {
-    const gradeIdx = answers[0];
-    const g = q.grades[gradeIdx];
-    score = `Grade ${g.grade}`;
-    scoreLabel = g.title;
-    band = q.bands.find(b => g.grade <= b.maxGrade) || q.bands[q.bands.length - 1];
-    resultSummary = `Selected grade: Grade ${g.grade} — ${g.title}: ${g.desc}`;
-
-  } else if (q.type === 'sas') {
-    const qs = getQuestions();
-    const count = sasAnswers.filter(a => a.present === true).length;
-    const impactTotal = sasAnswers.reduce((s, a) => s + (a.severity || 0), 0);
-    score = count;
-    scoreLabel = `symptoms reported · total impact score: ${impactTotal} / ${qs.filter(qq => !qq.maleOnly || gender === 'male').length * 5}`;
-    band = q.bands.find(b => count <= b.maxCount) || q.bands[q.bands.length - 1];
-    resultSummary = qs.map((qq, i) => {
-      const a = sasAnswers[i];
-      return `${qq.text}: ${a.present ? 'Yes (severity: ' + (q.severityOptions[a.severity - 1] || 'N/A') + ')' : 'No'}`;
-    }).join('\n');
+  } else if(q.type==='sas'){
+    const qsl=getQs();
+    const cnt=sasAns.filter(a=>a.present===true).length;
+    const imp=sasAns.reduce((s,a)=>s+(a.severity||0),0);
+    score=cnt;
+    sub=`${t('scoreSubSas')}: ${imp}`;
+    band=q.bands.find(b=>cnt<=b.maxCount)||q.bands[q.bands.length-1];
+    summary=qsl.map((item,i)=>{const a=sasAns[i];return `${item.text}: ${a.present?`Yes (sev:${a.severity})`:'No'}`;}).join('\n');
   }
 
-  document.getElementById('scoreDisplay').textContent = score;
-  document.getElementById('scoreSubDisplay').textContent = scoreLabel;
-  document.getElementById('scoreQName').textContent = q.name;
+  $('rScore').textContent=score;
+  $('rSub').textContent=sub;
+  $('rQName').textContent=q.name;
+  $('bandBox').innerHTML=`<div class="band-title" style="color:${band.color}">${band.label}</div><div class="band-body">${band.body}</div>`;
+  $('bandBox').style.background=band.bg;
 
-  document.getElementById('bandBox').innerHTML = `
-    <div class="band-title" style="color:${band.color}">${band.label}</div>
-    <div class="band-body">${band.body}</div>`;
-  document.getElementById('bandBox').style.background = band.bg;
+  $('nextBox').innerHTML=`<div class="next-label">${t('rNextLbl')}</div>
+    <div class="next-item"><div class="next-num">1</div><div class="next-text">${t('rN1')}</div></div>
+    <div class="next-item"><div class="next-num">2</div><div class="next-text">${t('rN2')}</div></div>
+    <div class="next-item"><div class="next-num">3</div><div class="next-text">${t('rN3')}</div></div>`;
 
-  document.getElementById('nextStepsBox').innerHTML = `
-    <div class="next-label">What to do next</div>
-    <div class="next-item"><div class="next-num">1</div><div class="next-text">Screenshot or save this result to share with your doctor.</div></div>
-    <div class="next-item"><div class="next-num">2</div><div class="next-text">Book an appointment with your GP and bring this result.</div></div>
-    <div class="next-item"><div class="next-num">3</div><div class="next-text">Read the book with your dominant pattern in mind. Your highest-scoring symptoms point to the most relevant sections.</div></div>`;
+  let transHtml='';
+  if(lang==='da'){
+    transHtml=q.officialDa
+      ?`<div class="attr-official">&#10003; ${t('rOfficial')}</div>`
+      :`<div class="attr-trans">&#8635; ${t('rTrans')}</div><div class="attr-note">${t('rTransNote')}</div>`;
+  }
+  $('attrBox').innerHTML=`<div class="attr-label">${t('rAttrLbl')}</div><div class="attr-name">${q.name}</div><div class="attr-val">&#10003; ${t('rVal')}</div>${transHtml}<div class="attr-citation">${q.attribution}</div>`;
 
-  document.getElementById('attributionBox').innerHTML = `
-    <div class="attr-label">About this questionnaire</div>
-    <div class="attr-item">
-      <div class="attr-name">${q.name}</div>
-      <div class="attr-validated">✓ Validated clinical tool</div>
-      <div style="margin-top:4px">${q.attribution}</div>
-    </div>`;
-
-  await getAIInterpretation(q, score, band, resultSummary);
-  setProgress(100);
+  await interpret(q,score,band,summary);
+  prog(100);
 }
 
-async function getAIInterpretation(q, score, band, resultSummary) {
-  const aiBox = document.getElementById('aiInterpretation');
-  const prompt = `You are a compassionate health assistant for the book "Not in Your Head" by Jonas Bertelsen, MSc Osteopath and Long COVID patient.
+async function interpret(q,score,band,summary){
+  const isDA=lang==='da';
+  const prompt=`You are a compassionate health assistant for the book "Not in Your Head" by Jonas Bertelsen, MSc Osteopath and Long COVID patient.
 
-A reader completed the ${q.name} — a validated clinical tool — and their result is:
+A reader completed the ${q.name} and their result is:
 Score: ${score}
 Band: ${band.label}
 
-Their individual responses:
-${resultSummary}
+Their responses:
+${summary}
 
-Write a warm, honest, plain-language interpretation in 3–4 short paragraphs:
+Write a warm, honest, plain-language interpretation in 3 to 4 short paragraphs:
 - Acknowledge what the score means in simple terms
-- Highlight the 2–3 most significant responses
+- Highlight the 2 to 3 most significant responses
 - Be honest but not alarmist
 - Tell them whether the book is likely relevant to them
-- End with one sentence of genuine encouragement — not empty positivity, but honest hope
+- End with one sentence of genuine encouragement, not empty positivity, but honest hope grounded in understanding the biology
 
-Do not use medical jargon. Do not diagnose. Write as a knowledgeable friend. Under 200 words. No bullet points — flowing prose only.`;
+Do not use medical jargon. Do not diagnose. Write as a knowledgeable friend. Under 200 words. No bullet points, flowing prose only.${isDA?' Respond entirely in Danish.':''}`;
 
-  try {
-    const response = await fetch('/api/interpret', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt })
-    });
-    if (!response.ok) throw new Error('Server error: ' + response.status);
-    const data = await response.json();
-    aiBox.innerHTML = `<div class="ai-body">${data.text.replace(/\n\n/g, '<br><br>')}</div>`;
-  } catch (err) {
-    aiBox.innerHTML = `<div class="ai-body" style="color:var(--muted);font-style:italic;">Your score has been calculated above. Something went wrong with the personalised interpretation — please try again.<br><br>Error: ${err.message}</div>`;
+  try{
+    const r=await fetch('/api/interpret',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+    if(!r.ok) throw new Error('Server error: '+r.status);
+    const d=await r.json();
+    $('aiBox').innerHTML=`<div class="ai-body">${d.text.replace(/\n\n/g,'<br><br>')}</div>`;
+  } catch(e){
+    $('aiBox').innerHTML=`<div class="ai-body" style="color:var(--muted);font-style:italic;">${isDA?'Din score er beregnet ovenfor. Noget gik galt med fortolkningen. Prøv venligst igen.':'Your score has been calculated above. Something went wrong with the interpretation. Please try again.'}<br><br>Error: ${e.message}</div>`;
   }
 }
 </script>
